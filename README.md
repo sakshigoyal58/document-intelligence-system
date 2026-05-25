@@ -1,134 +1,189 @@
-┌──────────────────────────────────────────────┐
-│                FRONTEND                      │
-├──────────────────────────────────────────────┤
-│ Next.js + React + Tailwind                  │
-│ - Login UI                                  │
-│ - Upload PDF                                │
-│ - Ask Questions                             │
-└─────────────────────┬────────────────────────┘
-                      │ HTTPS + JWT
-                      ▼
+# 📄 AI Document Intelligence System (Serverless on AWS)
 
-┌──────────────────────────────────────────────┐
-│              API GATEWAY                     │
-├──────────────────────────────────────────────┤
-│ AWS API Gateway (HTTP API)                  │
-│ - Route requests                            │
-│ - JWT validation                            │
-└──────────────┬───────────────────────────────┘
-               │
-       ┌───────┴──────────────────────────────────────┐
-       ▼                                              ▼
+A fully serverless, AI-powered document processing and Q&A system built using **.NET 8, AWS Lambda, and Claude/OpenAI APIs**.  
+The system allows users to upload PDF documents, automatically processes them, and enables AI-powered querying over document content.
 
-┌──────────────────────────┐         ┌──────────────────────────┐
-│ UploadLambda             │         │ QueryLambda              │
-├──────────────────────────┤         ├──────────────────────────┤
-│ AWS Lambda (.NET 8)      │         │ AWS Lambda (.NET 8)      │
-│                          │         │                          │
-│ Responsibilities:        │         │ Responsibilities:        │
-│ - receive PDF upload     │         │ - receive user question  │
-│ - store file in S3       │         │ - fetch chunks           │
-│ - save metadata          │         │ - call AIService         │
-│ - send SQS message       │         │ - return AI answer       │
-└──────────────┬───────────┘         └──────────────┬───────────┘
-               │                                    │
-               ▼                                    ▼
+---
 
-     ┌──────────────────────┐         ┌──────────────────────┐
-     │ Amazon S3            │         │ DynamoDB             │
-     ├──────────────────────┤         ├──────────────────────┤
-     │ Store PDF documents  │         │ Store:               │
-     │                      │         │ - metadata           │
-     │                      │         │ - chunks             │
-     │                      │         │ - summaries          │
-     └──────────┬───────────┘         └──────────┬───────────┘
-                │                                ▲
-                ▼                                │
+# 🚀 Architecture Overview
 
-     ┌───────────────────────────────────────────┐
-     │              Amazon SQS                   │
-     ├───────────────────────────────────────────┤
-     │ Main Queue                               │
-     │ - document processing event              │
-     │                                          │
-     │ DLQ (Dead Letter Queue)                  │
-     │ - failed events after retries            │
-     └──────────────────┬────────────────────────┘
-                        ▼
+## 🧑‍💻 Frontend
+- Next.js + React + Tailwind
+- Features:
+  - User Authentication (JWT)
+  - Upload PDF documents
+  - Ask questions on documents
 
-┌──────────────────────────────────────────────┐
-│ ProcessingLambda                             │
-├──────────────────────────────────────────────┤
-│ AWS Lambda (.NET 8)                          │
-│                                              │
-│ Responsibilities:                            │
-│ - read PDF from S3                           │
-│ - extract text                               │
-│ - chunk text                                 │
-│ - call AIService                             │
-│ - generate summary                           │
-│ - save chunks/results in DynamoDB            │
-└──────────────────┬───────────────────────────┘
-                   ▼
+---
 
-┌──────────────────────────────────────────────┐
-│ AIService (.NET Class Library)               │
-├──────────────────────────────────────────────┤
-│ Claude API OR OpenAI API                     │
-│                                              │
-│ Features:                                    │
-│ - summarization                              │
-│ - Q&A                                        │
-│ - extraction                                 │
-│ - classification                             │
-│                                              │
-│ Prompt Engineering Used                      │
-└──────────────────────────────────────────────┘
+## 🌐 API Layer
+### AWS API Gateway (HTTP API)
+- Routes all incoming requests
+- Handles JWT authentication
+- Forwards requests to Lambda functions
 
+---
 
-┌──────────────────────────────────────────────┐
-│ NotificationLambda                           │
-├──────────────────────────────────────────────┤
-│ AWS Lambda (.NET 8)                          │
-│                                              │
-│ Responsibilities:                            │
-│ - consume notification events                │
-│ - retry failed notifications                 │
-│ - handle DLQ events                          │
-└──────────────────────────────────────────────┘
+## ⚙️ Backend (AWS Lambda - .NET 8)
 
+### 📤 UploadLambda
+- Receives PDF upload requests
+- Stores files in Amazon S3
+- Saves metadata in DynamoDB
+- Publishes event to SQS
 
-┌──────────────────────────────────────────────┐
-│ Shared .NET Class Libraries                  │
-├──────────────────────────────────────────────┤
-│ Core                                         │
-│ - models                                     │
-│ - DTOs                                       │
-│                                              │
-│ Services                                     │
-│ - AIService                                  │
-│ - S3Service                                  │
-│ - DynamoDbService                            │
-│ - JwtService                                 │
-│ - SqsService                                 │
-│                                              │
-│ Business                                     │
-│ - chunking logic                             │
-│ - validation                                 │
-│ - RBAC rules                                 │
-│                                              │
-│ Infrastructure                               │
-│ - repositories                               │
-│ - AWS SDK integrations                       │
-│ - logging                                    │
-└──────────────────────────────────────────────┘
+---
 
+### ❓ QueryLambda
+- Handles user questions
+- Fetches document chunks from DynamoDB
+- Calls AI service for response generation
+- Returns AI-generated answer
 
-┌──────────────────────────────────────────────┐
-│ CloudWatch                                   │
-├──────────────────────────────────────────────┤
-│ - Lambda logs                                │
-│ - SQS monitoring                             │
-│ - DLQ alarms                                 │
-│ - API monitoring                             │
-└──────────────────────────────────────────────┘
+---
+
+### 📄 ProcessingLambda
+- Triggered via SQS
+- Reads PDF from S3
+- Extracts raw text
+- Splits text into chunks
+- Stores processed data in DynamoDB
+- Calls AI service for summarization
+
+---
+
+### 🔔 NotificationLambda
+- Consumes notification events from SQS
+- Handles retry logic
+- Processes DLQ (Dead Letter Queue) messages
+
+---
+
+## ☁️ AWS Services
+
+### 🗂️ Amazon S3
+- Stores uploaded PDF documents
+
+### 🗃️ Amazon DynamoDB
+- Stores:
+  - Document metadata
+  - Text chunks
+  - AI-generated summaries
+
+### 📬 Amazon SQS
+- Handles asynchronous processing
+- Enables event-driven architecture
+- Includes DLQ for failed message handling
+
+---
+
+## 🤖 AI Layer
+
+### AIService (.NET Class Library)
+- Integrates with:
+  - Claude API OR OpenAI API
+
+### Capabilities:
+- Document summarization
+- Question answering (Q&A)
+- Information extraction
+- Text classification
+
+### Prompt Engineering:
+- Context-aware prompts
+- Chunk-based processing
+- Reduced hallucination design
+
+---
+
+## 🧱 Shared .NET Architecture
+
+### Core
+- Models
+- DTOs
+- Enums
+
+### Services
+- AIService
+- S3Service
+- DynamoDbService
+- JwtService
+- SqsService
+
+### Business
+- Chunking logic
+- Validation rules
+- RBAC policies
+
+### Infrastructure
+- AWS SDK integrations
+- Repository implementations
+- Logging system
+
+---
+
+## 🔐 Security
+
+- JWT-based authentication
+- Role-Based Access Control (RBAC)
+  - Admin: Full access
+  - User: Own documents only
+
+---
+
+## 📊 Observability
+
+### Amazon CloudWatch
+- Lambda logs
+- API monitoring
+- SQS tracking
+- DLQ alerts
+
+---
+
+## 🔄 End-to-End Flow
+
+1. User uploads PDF via frontend
+2. API Gateway routes request to UploadLambda
+3. PDF stored in S3
+4. Metadata saved in DynamoDB
+5. SQS event triggers ProcessingLambda
+6. PDF is parsed and chunked
+7. AI generates summaries
+8. User queries document via QueryLambda
+9. AI returns context-aware answers
+
+---
+
+## 🧠 Key Design Principles
+
+- Serverless-first architecture
+- Event-driven communication (SQS)
+- Clean Architecture (.NET)
+- Separation of concerns
+- Scalable AI integration layer
+- Cost-efficient AWS design (Free Tier optimized)
+
+---
+
+## 🛠️ Tech Stack
+
+- .NET 8 (AWS Lambda)
+- AWS API Gateway
+- AWS Lambda
+- Amazon S3
+- Amazon DynamoDB
+- Amazon SQS + DLQ
+- CloudWatch
+- Next.js + React + Tailwind
+- Claude API / OpenAI API
+
+---
+
+## 📌 Project Goal
+
+To demonstrate:
+- Real-world serverless architecture design
+- AI integration in backend systems
+- Event-driven distributed systems
+- Clean .NET architecture in cloud environments
