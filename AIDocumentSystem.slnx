@@ -8,5 +8,4 @@
   <Project Path="QueryLambda/QueryLambda.csproj" />
   <Project Path="Services/Services.csproj" />
   <Project Path="UploadLambda/UploadLambda.csproj" />
-  <Project Path="PresightLambda/PresightLambda.csproj" />
 </Solution>
