@@ -10,12 +10,21 @@
       "PresightLambda/1.0.0": {
         "dependencies": {
           "AWSSDK.S3": "4.0.0",
+          "Amazon.Lambda.APIGatewayEvents": "3.0.0",
           "Amazon.Lambda.Core": "2.8.1",
           "Amazon.Lambda.Serialization.SystemTextJson": "2.4.5",
           "Core": "1.0.0"
         },
         "runtime": {
           "PresightLambda.dll": {}
+        }
+      },
+      "Amazon.Lambda.APIGatewayEvents/3.0.0": {
+        "runtime": {
+          "lib/net8.0/Amazon.Lambda.APIGatewayEvents.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.2.0.0"
+          }
         }
       },
       "Amazon.Lambda.Core/2.8.1": {
@@ -71,6 +80,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "Amazon.Lambda.APIGatewayEvents/3.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-1JxlUCqIps7p9FLRfFrgaLCVqgg2J39ZOmZDmV/R1LMwb2eT4/glaKwhxC3r01HeDsozk1jUe1KYRGgzxJaVXg==",
+      "path": "amazon.lambda.apigatewayevents/3.0.0",
+      "hashPath": "amazon.lambda.apigatewayevents.3.0.0.nupkg.sha512"
     },
     "Amazon.Lambda.Core/2.8.1": {
       "type": "package",

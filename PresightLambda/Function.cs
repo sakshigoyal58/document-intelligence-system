@@ -3,6 +3,8 @@ using Core.DTOs;
 using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon;
+using System.Text.Json;
+using Amazon.Lambda.APIGatewayEvents;
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
@@ -11,8 +13,14 @@ namespace PresightLambda;
 
 public class Function
 {
-    public FileKeyResponse FunctionHandler(PresignRequest? input, ILambdaContext context)
+    public FileKeyResponse FunctionHandler(APIGatewayHttpApiV2ProxyRequest request, ILambdaContext context)
     {
+        var input = JsonSerializer.Deserialize<PresignRequest>(request.Body);
+        context.Logger.LogInformation(
+        $"Input received: {JsonSerializer.Serialize(input)}");
+
+        context.Logger.LogInformation( $"FileName received: {input?.FileName}");
+        
         if (input is null || string.IsNullOrWhiteSpace(input.FileName))
         {
             context.Logger.LogInformation("PresightLambda invoked without fileName.");
