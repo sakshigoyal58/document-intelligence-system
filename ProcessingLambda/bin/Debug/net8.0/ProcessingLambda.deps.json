@@ -9,7 +9,9 @@
       "ProcessingLambda/1.0.0": {
         "dependencies": {
           "Amazon.Lambda.Core": "2.8.1",
+          "Amazon.Lambda.S3Events": "3.0.0",
           "Amazon.Lambda.Serialization.SystemTextJson": "2.4.5",
+          "Business": "1.0.0",
           "Core": "1.0.0",
           "Services": "1.0.0"
         },
@@ -20,6 +22,14 @@
       "Amazon.Lambda.Core/2.8.1": {
         "runtime": {
           "lib/net8.0/Amazon.Lambda.Core.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Amazon.Lambda.S3Events/3.0.0": {
+        "runtime": {
+          "lib/netcoreapp3.1/Amazon.Lambda.S3Events.dll": {
             "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
           }
@@ -109,6 +119,13 @@
       "sha512": "sha512-wLrBdUXY1jn12o3+sar5c5ApMJPGEMye+1rnyDjwCKA2rcPNMZbNsKLQ76bV+DGnx5CN8bArB26SKB/rEuxIxQ==",
       "path": "amazon.lambda.core/2.8.1",
       "hashPath": "amazon.lambda.core.2.8.1.nupkg.sha512"
+    },
+    "Amazon.Lambda.S3Events/3.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-fuBVzMnTx6sdcFrF6wDD4wyR5Dy/YN6+bX8QHVE/4hil2si7Y/MQkGXDDPUbH/sAjtZLZ0T6h7DS6guZ1kK0qg==",
+      "path": "amazon.lambda.s3events/3.0.0",
+      "hashPath": "amazon.lambda.s3events.3.0.0.nupkg.sha512"
     },
     "Amazon.Lambda.Serialization.SystemTextJson/2.4.5": {
       "type": "package",

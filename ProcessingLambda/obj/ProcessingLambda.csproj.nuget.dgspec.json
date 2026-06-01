@@ -214,6 +214,9 @@
             "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {
+              "/Users/user/Downloads/document-intelligence-system/Business/Business.csproj": {
+                "projectPath": "/Users/user/Downloads/document-intelligence-system/Business/Business.csproj"
+              },
               "/Users/user/Downloads/document-intelligence-system/Core/Core.csproj": {
                 "projectPath": "/Users/user/Downloads/document-intelligence-system/Core/Core.csproj"
               },
@@ -243,6 +246,10 @@
             "Amazon.Lambda.Core": {
               "target": "Package",
               "version": "[2.8.1, )"
+            },
+            "Amazon.Lambda.S3Events": {
+              "target": "Package",
+              "version": "[2.2.0, )"
             },
             "Amazon.Lambda.Serialization.SystemTextJson": {
               "target": "Package",
