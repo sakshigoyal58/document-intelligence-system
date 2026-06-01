@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("UploadLambda")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e60eb17624a6994f4a994d7dc4457985f0eb7930")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+daa8f60285b0c6cfe471f6fbf750398d2e817cc3")]
 [assembly: System.Reflection.AssemblyProductAttribute("UploadLambda")]
 [assembly: System.Reflection.AssemblyTitleAttribute("UploadLambda")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

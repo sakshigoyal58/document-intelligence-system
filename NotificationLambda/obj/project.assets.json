@@ -33,7 +33,7 @@
       },
       "Business/1.0.0": {
         "type": "project",
-        "framework": ".NETCoreApp,Version=v10.0",
+        "framework": ".NETCoreApp,Version=v8.0",
         "compile": {
           "bin/placeholder/Business.dll": {}
         },
@@ -53,7 +53,7 @@
       },
       "Infrastructure/1.0.0": {
         "type": "project",
-        "framework": ".NETCoreApp,Version=v10.0",
+        "framework": ".NETCoreApp,Version=v8.0",
         "compile": {
           "bin/placeholder/Infrastructure.dll": {}
         },
@@ -63,7 +63,7 @@
       },
       "Services/1.0.0": {
         "type": "project",
-        "framework": ".NETCoreApp,Version=v10.0",
+        "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
           "Business": "1.0.0",
           "Infrastructure": "1.0.0"
