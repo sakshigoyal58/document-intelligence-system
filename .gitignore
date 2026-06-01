@@ -1,9 +1,10 @@
-PresightLambda/obj/
-## Build results
 bin/
 obj/
-
-## Visual Studio
 .vs/
-*.user
-*.suo
+.vscode/
+*.dll
+*.exe
+*.pdb
+node_modules/
+.env
+appsettings.local.json
