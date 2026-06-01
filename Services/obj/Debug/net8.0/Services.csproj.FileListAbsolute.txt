@@ -2,9 +2,11 @@
 /Users/user/Downloads/document-intelligence-system/Services/bin/Debug/net8.0/Services.dll
 /Users/user/Downloads/document-intelligence-system/Services/bin/Debug/net8.0/Services.pdb
 /Users/user/Downloads/document-intelligence-system/Services/bin/Debug/net8.0/Business.dll
+/Users/user/Downloads/document-intelligence-system/Services/bin/Debug/net8.0/Core.dll
 /Users/user/Downloads/document-intelligence-system/Services/bin/Debug/net8.0/Infrastructure.dll
 /Users/user/Downloads/document-intelligence-system/Services/bin/Debug/net8.0/Business.pdb
 /Users/user/Downloads/document-intelligence-system/Services/bin/Debug/net8.0/Infrastructure.pdb
+/Users/user/Downloads/document-intelligence-system/Services/bin/Debug/net8.0/Core.pdb
 /Users/user/Downloads/document-intelligence-system/Services/obj/Debug/net8.0/Services.csproj.AssemblyReference.cache
 /Users/user/Downloads/document-intelligence-system/Services/obj/Debug/net8.0/Services.GeneratedMSBuildEditorConfig.editorconfig
 /Users/user/Downloads/document-intelligence-system/Services/obj/Debug/net8.0/Services.AssemblyInfoInputs.cache

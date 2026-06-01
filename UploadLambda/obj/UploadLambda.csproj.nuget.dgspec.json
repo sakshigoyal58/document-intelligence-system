@@ -26,7 +26,11 @@
           "net8.0": {
             "framework": "net8.0",
             "targetAlias": "net8.0",
-            "projectReferences": {}
+            "projectReferences": {
+              "/Users/user/Downloads/document-intelligence-system/Core/Core.csproj": {
+                "projectPath": "/Users/user/Downloads/document-intelligence-system/Core/Core.csproj"
+              }
+            }
           }
         },
         "warningProperties": {

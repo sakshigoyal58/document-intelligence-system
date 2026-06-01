@@ -1,1 +1,9 @@
 PresightLambda/obj/
+## Build results
+bin/
+obj/
+
+## Visual Studio
+.vs/
+*.user
+*.suo

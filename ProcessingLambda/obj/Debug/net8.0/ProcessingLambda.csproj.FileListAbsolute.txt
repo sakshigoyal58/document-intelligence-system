@@ -4,6 +4,8 @@
 /Users/user/Downloads/document-intelligence-system/ProcessingLambda/bin/Debug/net8.0/ProcessingLambda.pdb
 /Users/user/Downloads/document-intelligence-system/ProcessingLambda/bin/Debug/net8.0/Amazon.Lambda.Core.dll
 /Users/user/Downloads/document-intelligence-system/ProcessingLambda/bin/Debug/net8.0/Amazon.Lambda.Serialization.SystemTextJson.dll
+/Users/user/Downloads/document-intelligence-system/ProcessingLambda/bin/Debug/net8.0/AWSSDK.Core.dll
+/Users/user/Downloads/document-intelligence-system/ProcessingLambda/bin/Debug/net8.0/AWSSDK.DynamoDBv2.dll
 /Users/user/Downloads/document-intelligence-system/ProcessingLambda/bin/Debug/net8.0/Business.dll
 /Users/user/Downloads/document-intelligence-system/ProcessingLambda/bin/Debug/net8.0/Core.dll
 /Users/user/Downloads/document-intelligence-system/ProcessingLambda/bin/Debug/net8.0/Infrastructure.dll
