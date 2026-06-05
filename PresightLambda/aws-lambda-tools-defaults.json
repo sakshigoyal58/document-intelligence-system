@@ -1,0 +1,14 @@
+{
+  "information": [
+    "AWS Lambda project defaults for PresightLambda"
+  ],
+    
+  "profile": "default",
+  "region": "us-east-1",
+  "configuration": "Debug",
+  "framework": "net8.0",
+  "function-runtime": "dotnet8",
+  "function-handler": "PresightLambda::PresightLambda.Function::FunctionHandler",
+  "function-name": "PresightLambda"
+}
+  

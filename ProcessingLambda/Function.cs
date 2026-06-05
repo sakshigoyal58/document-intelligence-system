@@ -1,21 +1,61 @@
 using Amazon.Lambda.Core;
+using Services.DynamoDb;
+using Business.Validation;
+using Amazon.Lambda.S3Events;
+using static Amazon.Lambda.S3Events.S3Event;
 
-// Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
 
 namespace ProcessingLambda;
 
 public class Function
 {
-    
-    /// <summary>
-    /// A simple function that takes a string and does a ToUpper
-    /// </summary>
-    /// <param name="input">The event for the Lambda function handler to process.</param>
-    /// <param name="context">The ILambdaContext that provides methods for logging and describing the Lambda environment.</param>
-    /// <returns></returns>
-    public string FunctionHandler(string input, ILambdaContext context)
+    private readonly IDynamoDbFileService _fileService;
+    private readonly IPdfValidator _validator;
+
+    public Function()
     {
-        return input.ToUpper();
+        _fileService = new DynamoDbFileService();
+        _validator = new PdfValidator();
+    }
+
+    public async Task FunctionHandler(S3Event s3Event, ILambdaContext context)
+{
+    try
+    {
+        foreach (var record in s3Event.Records)
+        {
+            await ProcessFile(record, context);
+        }
+    }
+    catch (Exception ex)
+    {
+        context.Logger.LogLine($"Error: {ex.Message}");
+        throw;
+    }
+}   
+    private async Task ProcessFile(S3EventNotificationRecord record, ILambdaContext context)
+    {
+    var fileName = record.S3.Object.Key;
+    var fileSize = record.S3.Object.Size;
+    var fileId = Guid.NewGuid().ToString();
+
+    context.Logger.LogLine($"Processing: {fileName} ({fileSize} bytes)");
+
+    await _fileService.AddFileRecordAsync(fileId, fileName, fileSize);
+    context.Logger.LogLine($"✓ Record created: {fileId}");
+
+    var validation = _validator.Validate(fileName, fileSize);
+
+    if (validation.IsValid)
+    {
+        await _fileService.UpdateFileStatusAsync(fileId, "VALIDATED");
+        context.Logger.LogLine($"✓ Validated: {fileId}");
+    }
+    else
+    {
+        await _fileService.UpdateFileStatusAsync(fileId, "VALIDATION_FAILED", validation.Error);
+        context.Logger.LogLine($"✗ Failed: {validation.Error}");
+    }
     }
 }
