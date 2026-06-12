@@ -1,8 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "EQTTfJzLtvk=",
+  "dgSpecHash": "ewHJ0x/nJ5w=",
   "success": true,
   "projectFilePath": "/Users/user/Downloads/document-intelligence-system/Core/Core.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "/Users/user/.nuget/packages/awssdk.core/4.0.9/awssdk.core.4.0.9.nupkg.sha512",
+    "/Users/user/.nuget/packages/awssdk.dynamodbv2/4.0.21.2/awssdk.dynamodbv2.4.0.21.2.nupkg.sha512"
+  ],
   "logs": []
 }

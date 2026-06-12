@@ -14,9 +14,13 @@ public class Function
     private readonly IPdfValidator _validator;
 
     public Function()
+    : this(new DynamoDbFileService(), new PdfValidator())
+    {}   
+
+    public Function(IDynamoDbFileService fileService, IPdfValidator validator)
     {
-        _fileService = new DynamoDbFileService();
-        _validator = new PdfValidator();
+        _fileService = fileService;
+        _validator = validator;
     }
 
     public async Task FunctionHandler(S3Event s3Event, ILambdaContext context)

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("QueryLambda")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+32ddc336588af10005694f02027f86e3bcc8b2d0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bfbfeec49c5cb2234a020e9bf7f9c9e2d9fbd57a")]
 [assembly: System.Reflection.AssemblyProductAttribute("QueryLambda")]
 [assembly: System.Reflection.AssemblyTitleAttribute("QueryLambda")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

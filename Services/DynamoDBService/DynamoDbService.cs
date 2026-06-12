@@ -19,7 +19,8 @@ public class DynamoDbFileService : IDynamoDbFileService
             ["fileName"] = new AttributeValue { S = fileName },
             ["fileSize"] = new AttributeValue { N = fileSize.ToString() },
             ["status"] = new AttributeValue { S = "FILE_UPLOADED" },
-            ["createdAt"] = new AttributeValue { S = DateTime.UtcNow.ToString("O") }
+            ["createdAt"] = new AttributeValue { S = DateTime.UtcNow.ToString("O") },
+            ["updatedAt"] = new AttributeValue { S = DateTime.UtcNow.ToString("O") }
         }
     };
 
@@ -27,7 +28,7 @@ public class DynamoDbFileService : IDynamoDbFileService
 }
 
     public async Task UpdateFileStatusAsync(string fileId, string status, string? errorMessage = null)
-{
+    {
     var values = new Dictionary<string, AttributeValue>
     {
         [":status"] = new AttributeValue { S = status },
@@ -48,12 +49,28 @@ public class DynamoDbFileService : IDynamoDbFileService
         UpdateExpression = updateExpr,
         ExpressionAttributeNames = new() 
         { 
-            ["#status"] = "Status",
-            ["#updatedAt"] = "UpdatedAt"  // ← ADD THIS LINE
+            ["#status"] = "status",
+            ["#updatedAt"] = "updatedAt"  // ← ADD THIS LINE
         },
         ExpressionAttributeValues = values
     };
 
     await _dynamoClient.UpdateItemAsync(request);
-}
+    }
+
+    public async Task<List<DocumentEntity>> GetAllDocumentsAsync()
+    {
+        var request = new ScanRequest { TableName = TABLE_NAME};
+
+        var response = await _dynamoClient.ScanAsync(request);
+
+        var documents = response.Items.Select(item => new DocumentEntity {
+        DocumentId = item["documentId"].S,
+        FileName = item["fileName"].S,
+        FileStatus = item["status"].S,
+        CreatedAt = DateTime.Parse(item["createdAt"].S),
+        UpdatedAt = DateTime.Parse(item["updatedAt"].S)}).ToList();
+
+        return documents;
+    }
 }

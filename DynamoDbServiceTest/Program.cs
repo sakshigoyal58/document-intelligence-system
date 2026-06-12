@@ -26,4 +26,8 @@ Console.WriteLine("\nUpdating status to VALIDATION_FAILED...");
 await fileService.UpdateFileStatusAsync(fileId2, "VALIDATION_FAILED", "File is not PDF");
 Console.WriteLine($"✓ Status updated with error");
 
+Console.WriteLine("\nALL operations completed.Please verify documnets in dynamodb...");
+ var documents = await fileService.GetAllDocumentsAsync();
+Console.WriteLine(documents.Count);
+
 Console.WriteLine("\n✅ All tests passed!");

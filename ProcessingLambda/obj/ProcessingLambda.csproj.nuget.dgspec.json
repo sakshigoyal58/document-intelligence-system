@@ -110,6 +110,12 @@
         "net8.0": {
           "framework": "net8.0",
           "targetAlias": "net8.0",
+          "dependencies": {
+            "AWSSDK.DynamoDBv2": {
+              "target": "Package",
+              "version": "[4.0.21.2, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -333,7 +339,7 @@
           "dependencies": {
             "AWSSDK.DynamoDBv2": {
               "target": "Package",
-              "version": "[3.7.300.34, )"
+              "version": "[4.0.21.2, )"
             }
           },
           "imports": [
