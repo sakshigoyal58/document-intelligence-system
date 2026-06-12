@@ -11,3 +11,5 @@
 /Users/user/Downloads/document-intelligence-system/Core/obj/Debug/net8.0/refint/Core.dll
 /Users/user/Downloads/document-intelligence-system/Core/obj/Debug/net8.0/Core.pdb
 /Users/user/Downloads/document-intelligence-system/Core/obj/Debug/net8.0/ref/Core.dll
+/Users/user/Downloads/document-intelligence-system/Core/bin/Debug/net8.0/Core.runtimeconfig.json
+/Users/user/Downloads/document-intelligence-system/Core/obj/Debug/net8.0/Core.genruntimeconfig.cache

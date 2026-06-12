@@ -18,3 +18,5 @@
 /Users/user/Downloads/document-intelligence-system/Services/obj/Debug/net8.0/refint/Services.dll
 /Users/user/Downloads/document-intelligence-system/Services/obj/Debug/net8.0/Services.pdb
 /Users/user/Downloads/document-intelligence-system/Services/obj/Debug/net8.0/ref/Services.dll
+/Users/user/Downloads/document-intelligence-system/Services/bin/Debug/net8.0/Services.runtimeconfig.json
+/Users/user/Downloads/document-intelligence-system/Services/obj/Debug/net8.0/Services.genruntimeconfig.cache
