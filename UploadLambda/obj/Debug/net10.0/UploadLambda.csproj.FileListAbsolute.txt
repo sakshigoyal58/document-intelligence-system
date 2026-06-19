@@ -26,3 +26,4 @@
 /Users/user/Downloads/document-intelligence-system/UploadLambda/obj/Debug/net10.0/UploadLambda.pdb
 /Users/user/Downloads/document-intelligence-system/UploadLambda/obj/Debug/net10.0/UploadLambda.genruntimeconfig.cache
 /Users/user/Downloads/document-intelligence-system/UploadLambda/obj/Debug/net10.0/ref/UploadLambda.dll
+/Users/user/Downloads/document-intelligence-system/UploadLambda/bin/Debug/net10.0/Amazon.Lambda.APIGatewayEvents.dll

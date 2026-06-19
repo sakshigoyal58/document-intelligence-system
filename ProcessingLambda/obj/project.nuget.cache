@@ -1,14 +1,17 @@
 {
   "version": 2,
-  "dgSpecHash": "tawsz53j3QI=",
+  "dgSpecHash": "P521GxAbdW0=",
   "success": true,
   "projectFilePath": "/Users/user/Downloads/document-intelligence-system/ProcessingLambda/ProcessingLambda.csproj",
   "expectedPackageFiles": [
+    "/Users/user/.nuget/packages/amazon.lambda.apigatewayevents/3.0.0/amazon.lambda.apigatewayevents.3.0.0.nupkg.sha512",
     "/Users/user/.nuget/packages/amazon.lambda.core/2.8.1/amazon.lambda.core.2.8.1.nupkg.sha512",
     "/Users/user/.nuget/packages/amazon.lambda.s3events/3.0.0/amazon.lambda.s3events.3.0.0.nupkg.sha512",
     "/Users/user/.nuget/packages/amazon.lambda.serialization.systemtextjson/2.4.5/amazon.lambda.serialization.systemtextjson.2.4.5.nupkg.sha512",
     "/Users/user/.nuget/packages/awssdk.core/4.0.9/awssdk.core.4.0.9.nupkg.sha512",
     "/Users/user/.nuget/packages/awssdk.dynamodbv2/4.0.21.2/awssdk.dynamodbv2.4.0.21.2.nupkg.sha512",
+    "/Users/user/.nuget/packages/microsoft.netcore.app.runtime.linux-x64/8.0.27/microsoft.netcore.app.runtime.linux-x64.8.0.27.nupkg.sha512",
+    "/Users/user/.nuget/packages/microsoft.aspnetcore.app.runtime.linux-x64/8.0.27/microsoft.aspnetcore.app.runtime.linux-x64.8.0.27.nupkg.sha512",
     "/Users/user/.nuget/packages/microsoft.netcore.app.crossgen2.osx-arm64/8.0.27/microsoft.netcore.app.crossgen2.osx-arm64.8.0.27.nupkg.sha512"
   ],
   "logs": [
@@ -21,7 +24,8 @@
       "filePath": "/Users/user/Downloads/document-intelligence-system/ProcessingLambda/ProcessingLambda.csproj",
       "libraryId": "Amazon.Lambda.S3Events",
       "targetGraphs": [
-        "net8.0"
+        "net8.0",
+        "net8.0/linux-x64"
       ]
     }
   ]

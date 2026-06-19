@@ -45,17 +45,28 @@
           }
         }
       },
-      "AWSSDK.Core/4.0.0": {
+      "AWSSDK.Core/4.0.9": {
         "runtime": {
           "lib/net8.0/AWSSDK.Core.dll": {
             "assemblyVersion": "4.0.0.0",
-            "fileVersion": "4.0.0.0"
+            "fileVersion": "4.0.9.0"
+          }
+        }
+      },
+      "AWSSDK.DynamoDBv2/4.0.21.2": {
+        "dependencies": {
+          "AWSSDK.Core": "4.0.9"
+        },
+        "runtime": {
+          "lib/net8.0/AWSSDK.DynamoDBv2.dll": {
+            "assemblyVersion": "4.0.0.0",
+            "fileVersion": "4.0.21.2"
           }
         }
       },
       "AWSSDK.S3/4.0.0": {
         "dependencies": {
-          "AWSSDK.Core": "4.0.0"
+          "AWSSDK.Core": "4.0.9"
         },
         "runtime": {
           "lib/net8.0/AWSSDK.S3.dll": {
@@ -65,6 +76,9 @@
         }
       },
       "Core/1.0.0": {
+        "dependencies": {
+          "AWSSDK.DynamoDBv2": "4.0.21.2"
+        },
         "runtime": {
           "Core.dll": {
             "assemblyVersion": "1.0.0.0",
@@ -101,12 +115,19 @@
       "path": "amazon.lambda.serialization.systemtextjson/2.4.5",
       "hashPath": "amazon.lambda.serialization.systemtextjson.2.4.5.nupkg.sha512"
     },
-    "AWSSDK.Core/4.0.0": {
+    "AWSSDK.Core/4.0.9": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-fUQeMoO358Gy/XhG7jphvY+ga4gUUonR7qc9rBAU0lXFJmSsaHVXFkhLi7+YxrhqIF/H4lWzr3SQ6rVHhSDM3w==",
-      "path": "awssdk.core/4.0.0",
-      "hashPath": "awssdk.core.4.0.0.nupkg.sha512"
+      "sha512": "sha512-++VT2Q80ieKgJaSkD4WsIB+lSwDbkOn45AJ89M4zMZyuogW3AeUG915ePy7hAcfpujTWnf39cUgNDA30c45IpA==",
+      "path": "awssdk.core/4.0.9",
+      "hashPath": "awssdk.core.4.0.9.nupkg.sha512"
+    },
+    "AWSSDK.DynamoDBv2/4.0.21.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-SoH/Hpj+cB4dumH/oHkG5cXSH6lKuv92F2W0o/mXVtriQ0G0ExjuvyvtSwZ4lG1YWjcynyaAheh73U9PClKkMw==",
+      "path": "awssdk.dynamodbv2/4.0.21.2",
+      "hashPath": "awssdk.dynamodbv2.4.0.21.2.nupkg.sha512"
     },
     "AWSSDK.S3/4.0.0": {
       "type": "package",

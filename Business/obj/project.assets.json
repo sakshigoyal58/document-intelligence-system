@@ -2,6 +2,19 @@
   "version": 4,
   "targets": {
     "net8.0": {
+      "Amazon.Lambda.APIGatewayEvents/3.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/Amazon.Lambda.APIGatewayEvents.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/Amazon.Lambda.APIGatewayEvents.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "AWSSDK.Core/4.0.9": {
         "type": "package",
         "compile": {
@@ -46,6 +59,19 @@
       }
     },
     "net8.0/linux-x64": {
+      "Amazon.Lambda.APIGatewayEvents/3.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/Amazon.Lambda.APIGatewayEvents.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/Amazon.Lambda.APIGatewayEvents.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "AWSSDK.Core/4.0.9": {
         "type": "package",
         "compile": {
@@ -91,6 +117,22 @@
     }
   },
   "libraries": {
+    "Amazon.Lambda.APIGatewayEvents/3.0.0": {
+      "sha512": "1JxlUCqIps7p9FLRfFrgaLCVqgg2J39ZOmZDmV/R1LMwb2eT4/glaKwhxC3r01HeDsozk1jUe1KYRGgzxJaVXg==",
+      "type": "package",
+      "path": "amazon.lambda.apigatewayevents/3.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "amazon.lambda.apigatewayevents.3.0.0.nupkg.sha512",
+        "amazon.lambda.apigatewayevents.nuspec",
+        "lib/net10.0/Amazon.Lambda.APIGatewayEvents.dll",
+        "lib/net10.0/Amazon.Lambda.APIGatewayEvents.xml",
+        "lib/net8.0/Amazon.Lambda.APIGatewayEvents.dll",
+        "lib/net8.0/Amazon.Lambda.APIGatewayEvents.xml"
+      ]
+    },
     "AWSSDK.Core/4.0.9": {
       "sha512": "++VT2Q80ieKgJaSkD4WsIB+lSwDbkOn45AJ89M4zMZyuogW3AeUG915ePy7hAcfpujTWnf39cUgNDA30c45IpA==",
       "type": "package",
@@ -146,6 +188,7 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
+      "Amazon.Lambda.APIGatewayEvents >= 3.0.0",
       "Core >= 1.0.0"
     ]
   },
@@ -197,6 +240,12 @@
       "net8.0": {
         "framework": "net8.0",
         "targetAlias": "net8.0",
+        "dependencies": {
+          "Amazon.Lambda.APIGatewayEvents": {
+            "target": "Package",
+            "version": "[3.0.0, )"
+          }
+        },
         "imports": [
           "net461",
           "net462",

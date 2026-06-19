@@ -1,31 +1,32 @@
-using Amazon.Lambda.Core;
-using Amazon.Lambda.APIGatewayEvents;
-using Services.DynamoDb;
 using System.Text.Json;
-
-// Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
-[assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
-
-namespace QueryLambda;
+using Amazon.Lambda.APIGatewayEvents;
+using Amazon.Lambda.Core;
+using Business.Helper;
+using Services.DynamoDb;
 
 public class Function
 {
-     private readonly IDynamoDbFileService _fileService;
+    private readonly  IDynamoDbService _documentDBService;
+    private readonly IRequestMapper _requestMapper ;
 
-     public Function()
-    : this(new DynamoDbFileService())
-    {} 
-
-    public Function(IDynamoDbFileService fileService)
+    public Function()
+        : this(new DynamoDbService(), new RequestMapper())
     {
-        _fileService = fileService;
     }
 
-    public async Task<APIGatewayHttpApiV2ProxyResponse> FunctionHandler(APIGatewayHttpApiV2ProxyRequest request, ILambdaContext context)
+    public Function(IDynamoDbService documentDBService, IRequestMapper requestMapper)
     {
-        context.Logger.LogLine("Fetching documents from DynamoDB...");
+        _documentDBService = documentDBService;
+        _requestMapper = requestMapper;
+    }
 
-        var documents = await _fileService.GetAllDocumentsAsync();
+    public async Task<APIGatewayHttpApiV2ProxyResponse> FunctionHandler(
+        APIGatewayHttpApiV2ProxyRequest request,
+        ILambdaContext context)
+    {
+        var query = _requestMapper.Map(request);
+
+        var documents = await _documentDBService.GetDocumentsAsync(query);
 
         return new APIGatewayHttpApiV2ProxyResponse
         {

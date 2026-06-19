@@ -26,3 +26,4 @@
 /Users/user/Downloads/document-intelligence-system/NotificationLambda/obj/Debug/net10.0/NotificationLambda.pdb
 /Users/user/Downloads/document-intelligence-system/NotificationLambda/obj/Debug/net10.0/NotificationLambda.genruntimeconfig.cache
 /Users/user/Downloads/document-intelligence-system/NotificationLambda/obj/Debug/net10.0/ref/NotificationLambda.dll
+/Users/user/Downloads/document-intelligence-system/NotificationLambda/bin/Debug/net10.0/Amazon.Lambda.APIGatewayEvents.dll

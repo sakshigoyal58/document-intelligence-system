@@ -77,6 +77,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
+          "Amazon.Lambda.APIGatewayEvents": "3.0.0",
           "Core": "1.0.0"
         },
         "compile": {
@@ -201,6 +202,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
+          "Amazon.Lambda.APIGatewayEvents": "3.0.0",
           "Core": "1.0.0"
         },
         "compile": {

@@ -10,16 +10,16 @@ namespace ProcessingLambda;
 
 public class Function
 {
-    private readonly IDynamoDbFileService _fileService;
+    private readonly IDynamoDbService _dynamoDBService;
     private readonly IPdfValidator _validator;
 
     public Function()
-    : this(new DynamoDbFileService(), new PdfValidator())
+    : this(new DynamoDbService(), new PdfValidator())
     {}   
 
-    public Function(IDynamoDbFileService fileService, IPdfValidator validator)
+    public Function(IDynamoDbService dynamoDBService, IPdfValidator validator)
     {
-        _fileService = fileService;
+        _dynamoDBService = dynamoDBService;
         _validator = validator;
     }
 
@@ -46,19 +46,19 @@ public class Function
 
     context.Logger.LogLine($"Processing: {fileName} ({fileSize} bytes)");
 
-    await _fileService.AddFileRecordAsync(fileId, fileName, fileSize);
+    await _dynamoDBService.AddFileRecordAsync(fileId, fileName, fileSize);
     context.Logger.LogLine($"✓ Record created: {fileId}");
 
     var validation = _validator.Validate(fileName, fileSize);
 
     if (validation.IsValid)
     {
-        await _fileService.UpdateFileStatusAsync(fileId, "VALIDATED");
+        await _dynamoDBService.UpdateFileStatusAsync(fileId, "VALIDATED");
         context.Logger.LogLine($"✓ Validated: {fileId}");
     }
     else
     {
-        await _fileService.UpdateFileStatusAsync(fileId, "VALIDATION_FAILED", validation.Error);
+        await _dynamoDBService.UpdateFileStatusAsync(fileId, "VALIDATION_FAILED", validation.Error);
         context.Logger.LogLine($"✗ Failed: {validation.Error}");
     }
     }

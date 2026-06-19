@@ -27,3 +27,4 @@
 /Users/user/Downloads/document-intelligence-system/ProcessingLambda/obj/Debug/net8.0/ProcessingLambda.genruntimeconfig.cache
 /Users/user/Downloads/document-intelligence-system/ProcessingLambda/obj/Debug/net8.0/ref/ProcessingLambda.dll
 /Users/user/Downloads/document-intelligence-system/ProcessingLambda/bin/Debug/net8.0/Amazon.Lambda.S3Events.dll
+/Users/user/Downloads/document-intelligence-system/ProcessingLambda/bin/Debug/net8.0/Amazon.Lambda.APIGatewayEvents.dll

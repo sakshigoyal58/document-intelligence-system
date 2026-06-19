@@ -1,5 +1,7 @@
 using Amazon.DynamoDBv2.DataModel;
 
+namespace Core.Models;
+
 [DynamoDBTable("Documents")]
 public class DocumentEntity
 {
