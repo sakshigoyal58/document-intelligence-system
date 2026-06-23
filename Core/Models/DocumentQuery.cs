@@ -2,5 +2,5 @@ namespace Core.Models;
 
 public class DocumentQuery
 {
-    public string? Status { get; set; }
+    public List<string>? StatusList { get; set; }
 }

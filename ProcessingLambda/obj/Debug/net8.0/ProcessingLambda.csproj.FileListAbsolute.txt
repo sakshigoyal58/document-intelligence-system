@@ -28,3 +28,12 @@
 /Users/user/Downloads/document-intelligence-system/ProcessingLambda/obj/Debug/net8.0/ref/ProcessingLambda.dll
 /Users/user/Downloads/document-intelligence-system/ProcessingLambda/bin/Debug/net8.0/Amazon.Lambda.S3Events.dll
 /Users/user/Downloads/document-intelligence-system/ProcessingLambda/bin/Debug/net8.0/Amazon.Lambda.APIGatewayEvents.dll
+/Users/user/Downloads/document-intelligence-system/ProcessingLambda/bin/Debug/net8.0/Amazon.Lambda.Logging.AspNetCore.dll
+/Users/user/Downloads/document-intelligence-system/ProcessingLambda/bin/Debug/net8.0/Microsoft.Extensions.Configuration.Abstractions.dll
+/Users/user/Downloads/document-intelligence-system/ProcessingLambda/bin/Debug/net8.0/Microsoft.Extensions.DependencyInjection.dll
+/Users/user/Downloads/document-intelligence-system/ProcessingLambda/bin/Debug/net8.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll
+/Users/user/Downloads/document-intelligence-system/ProcessingLambda/bin/Debug/net8.0/Microsoft.Extensions.Logging.dll
+/Users/user/Downloads/document-intelligence-system/ProcessingLambda/bin/Debug/net8.0/Microsoft.Extensions.Logging.Abstractions.dll
+/Users/user/Downloads/document-intelligence-system/ProcessingLambda/bin/Debug/net8.0/Microsoft.Extensions.Options.dll
+/Users/user/Downloads/document-intelligence-system/ProcessingLambda/bin/Debug/net8.0/Microsoft.Extensions.Primitives.dll
+/Users/user/Downloads/document-intelligence-system/ProcessingLambda/bin/Debug/net8.0/System.Diagnostics.DiagnosticSource.dll

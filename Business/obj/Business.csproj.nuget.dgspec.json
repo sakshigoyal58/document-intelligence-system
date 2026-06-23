@@ -73,11 +73,6 @@
           },
           "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.300/PortableRuntimeIdentifierGraph.json"
         }
-      },
-      "runtimes": {
-        "linux-x64": {
-          "#import": []
-        }
       }
     },
     "/Users/user/Downloads/document-intelligence-system/Core/Core.csproj": {
@@ -125,6 +120,14 @@
             "AWSSDK.DynamoDBv2": {
               "target": "Package",
               "version": "[4.0.21.2, )"
+            },
+            "Amazon.Lambda.Logging.AspNetCore": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "Microsoft.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[10.0.9, )"
             }
           },
           "imports": [
@@ -144,11 +147,6 @@
             }
           },
           "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/10.0.300/PortableRuntimeIdentifierGraph.json"
-        }
-      },
-      "runtimes": {
-        "linux-x64": {
-          "#import": []
         }
       }
     }

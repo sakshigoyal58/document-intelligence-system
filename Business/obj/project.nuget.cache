@@ -1,12 +1,25 @@
 {
   "version": 2,
-  "dgSpecHash": "aKutttURIJ4=",
+  "dgSpecHash": "z59lsFTQtek=",
   "success": true,
   "projectFilePath": "/Users/user/Downloads/document-intelligence-system/Business/Business.csproj",
   "expectedPackageFiles": [
     "/Users/user/.nuget/packages/amazon.lambda.apigatewayevents/3.0.0/amazon.lambda.apigatewayevents.3.0.0.nupkg.sha512",
+    "/Users/user/.nuget/packages/amazon.lambda.core/3.0.0/amazon.lambda.core.3.0.0.nupkg.sha512",
+    "/Users/user/.nuget/packages/amazon.lambda.logging.aspnetcore/5.0.0/amazon.lambda.logging.aspnetcore.5.0.0.nupkg.sha512",
     "/Users/user/.nuget/packages/awssdk.core/4.0.9/awssdk.core.4.0.9.nupkg.sha512",
-    "/Users/user/.nuget/packages/awssdk.dynamodbv2/4.0.21.2/awssdk.dynamodbv2.4.0.21.2.nupkg.sha512"
+    "/Users/user/.nuget/packages/awssdk.dynamodbv2/4.0.21.2/awssdk.dynamodbv2.4.0.21.2.nupkg.sha512",
+    "/Users/user/.nuget/packages/microsoft.extensions.configuration/2.1.0/microsoft.extensions.configuration.2.1.0.nupkg.sha512",
+    "/Users/user/.nuget/packages/microsoft.extensions.configuration.abstractions/2.1.0/microsoft.extensions.configuration.abstractions.2.1.0.nupkg.sha512",
+    "/Users/user/.nuget/packages/microsoft.extensions.configuration.binder/2.1.0/microsoft.extensions.configuration.binder.2.1.0.nupkg.sha512",
+    "/Users/user/.nuget/packages/microsoft.extensions.dependencyinjection/10.0.9/microsoft.extensions.dependencyinjection.10.0.9.nupkg.sha512",
+    "/Users/user/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/10.0.9/microsoft.extensions.dependencyinjection.abstractions.10.0.9.nupkg.sha512",
+    "/Users/user/.nuget/packages/microsoft.extensions.logging/2.1.0/microsoft.extensions.logging.2.1.0.nupkg.sha512",
+    "/Users/user/.nuget/packages/microsoft.extensions.logging.abstractions/2.1.0/microsoft.extensions.logging.abstractions.2.1.0.nupkg.sha512",
+    "/Users/user/.nuget/packages/microsoft.extensions.options/2.1.0/microsoft.extensions.options.2.1.0.nupkg.sha512",
+    "/Users/user/.nuget/packages/microsoft.extensions.primitives/2.1.0/microsoft.extensions.primitives.2.1.0.nupkg.sha512",
+    "/Users/user/.nuget/packages/system.memory/4.5.0/system.memory.4.5.0.nupkg.sha512",
+    "/Users/user/.nuget/packages/system.runtime.compilerservices.unsafe/4.5.0/system.runtime.compilerservices.unsafe.4.5.0.nupkg.sha512"
   ],
   "logs": []
 }

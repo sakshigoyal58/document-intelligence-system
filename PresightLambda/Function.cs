@@ -16,9 +16,8 @@ public class Function
     public FileKeyResponse FunctionHandler(APIGatewayHttpApiV2ProxyRequest request, ILambdaContext context)
     {
         var input = JsonSerializer.Deserialize<PresignRequest>(request.Body);
-        context.Logger.LogInformation(
-        $"Input received: {JsonSerializer.Serialize(input)}");
 
+        context.Logger.LogInformation($"Input received: {JsonSerializer.Serialize(input)}");
         context.Logger.LogInformation( $"FileName received: {input?.FileName}");
         
         if (input is null || string.IsNullOrWhiteSpace(input.FileName))

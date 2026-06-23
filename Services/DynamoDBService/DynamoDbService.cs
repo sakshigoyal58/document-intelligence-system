@@ -1,13 +1,20 @@
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 using Core.Models;
+using Microsoft.Extensions.Logging;
 
 namespace Services.DynamoDb;
 
 public class DynamoDbService : IDynamoDbService
 {
     private static readonly IAmazonDynamoDB _dynamoClient = new AmazonDynamoDBClient();
+    private readonly ILogger<DynamoDbService> _logger ;
     private const string TABLE_NAME = "DocumentMetadata";
+    public DynamoDbService(ILogger<DynamoDbService> logger)
+    {
+        _logger = logger;
+    }
+
 
     public async Task AddFileRecordAsync(string fileId, string fileName, long fileSize)
     {
@@ -61,14 +68,10 @@ public class DynamoDbService : IDynamoDbService
 
     public async Task<List<DocumentEntity>> GetDocumentsAsync(DocumentQuery query)
     {
-        if (string.IsNullOrEmpty(query.Status))
-        {
+        if (query.StatusList == null || !query.StatusList.Any())
             return await GetAllDocumentsAsync();
-        }
-        else
-        {
-            return await QueryAsync(query);
-        }
+
+        return await GetDocumentsByQuery(query);
     }
 
     private async Task<List<DocumentEntity>> GetAllDocumentsAsync()
@@ -77,31 +80,46 @@ public class DynamoDbService : IDynamoDbService
 
         var response = await _dynamoClient.ScanAsync(request);
 
+       
+
         return MapToDocumentEntities(response.Items);
     }
 
-    private async Task<List<DocumentEntity>> QueryAsync(DocumentQuery query)
+    private async Task<List<DocumentEntity>> GetDocumentsByQuery(DocumentQuery query)
     {
-        var request = new QueryRequest
-        {
-            TableName = TABLE_NAME,
-            IndexName = "GSI1",
-            KeyConditionExpression = "#status = :status",
-
-            ExpressionAttributeNames = new Dictionary<string, string>
+        _logger.LogInformation("Processing query with statuses: {statuses}", string.Join(",", query.StatusList ?? []));
+        var tasks = query.StatusList!
+            .Select(status =>
             {
-                ["#status"] = "status"
-            },
+                var request = new QueryRequest
+                {
+                    TableName = TABLE_NAME,
+                    IndexName = "status-index",
+                    KeyConditionExpression = "#status = :status",
+                    ExpressionAttributeNames = new Dictionary<string, string>
+                    {
+                        ["#status"] = "status"
+                    },
+                    ExpressionAttributeValues = new Dictionary<string, AttributeValue>
+                    {
+                        [":status"] = new AttributeValue { S = status }
+                    }
+                };
 
-            ExpressionAttributeValues = new Dictionary<string, AttributeValue>
-            {
-                [":status"] = new AttributeValue { S = query.Status }
-            }
-        };
+                return _dynamoClient.QueryAsync(request);
+            })
+            .ToList();
 
-        var response = await _dynamoClient.QueryAsync(request);
+        var responses = await Task.WhenAll(tasks);
+        
+        var allItems = responses.SelectMany(r => r.Items).ToList();
 
-        return MapToDocumentEntities(response.Items);
+        _logger.LogInformation("DynamoDB returned {count} items", allItems.Count);
+
+        return MapToDocumentEntities(allItems)
+            .GroupBy(doc => doc.DocumentId)
+            .Select(group => group.First())
+            .ToList();
     }
 
     private static List<DocumentEntity> MapToDocumentEntities(List<Dictionary<string, AttributeValue>> items)
