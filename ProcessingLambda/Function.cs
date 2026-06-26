@@ -5,6 +5,7 @@ using Services.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Services.DynamoDb;
+using Core.DTOs;
 using static Amazon.Lambda.S3Events.S3Event;
 
 [assembly: LambdaSerializer(
@@ -87,20 +88,24 @@ public class Function
 
         if (validation.IsValid)
         {
-            await _dynamoDBService.UpdateFileStatusAsync(
-                fileId, "VALIDATED");
+            await _dynamoDBService.UpdateFileStatusAsync(new UpdateStatusRequest
+            {
+                DocumentId = fileId,
+                Status = "VALIDATED"
+            });
 
             _logger.LogInformation("Validated {FileId}", fileId);
         }
         else
         {
-            await _dynamoDBService.UpdateFileStatusAsync(
-                fileId,
-                "VALIDATION_FAILED",
-                validation.Error);
+            await _dynamoDBService.UpdateFileStatusAsync(new UpdateStatusRequest
+            {
+                DocumentId = fileId,
+                Status = "VALIDATION_FAILED",
+                ErrorMessage = validation.Error
+            });
 
-            _logger.LogWarning(
-                "Validation failed {Error}", validation.Error);
+            _logger.LogWarning("Validation failed {Error}", validation.Error);
         }
     }
 }

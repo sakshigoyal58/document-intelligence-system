@@ -6,6 +6,7 @@
   <Project Path="PresightLambda/PresightLambda.csproj" />
   <Project Path="ProcessingLambda/ProcessingLambda.csproj" />
   <Project Path="QueryLambda/QueryLambda.csproj" />
+  <Project Path="ReviewLambda/ReviewLambda.csproj" />
   <Project Path="Services/Services.csproj" />
   <Project Path="UploadLambda/UploadLambda.csproj" />
 </Solution>

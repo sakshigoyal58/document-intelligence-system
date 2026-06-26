@@ -1,6 +1,7 @@
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 using Core.Models;
+using Core.DTOs;
 using Microsoft.Extensions.Logging;
 
 namespace Services.DynamoDb;
@@ -35,8 +36,12 @@ public class DynamoDbService : IDynamoDbService
         await _dynamoClient.PutItemAsync(request);
     }
 
-    public async Task UpdateFileStatusAsync(string fileId, string status, string? errorMessage = null)
-    {
+    public async Task UpdateFileStatusAsync(UpdateStatusRequest updateStatusRequest)
+{
+    var fileId = updateStatusRequest.DocumentId;
+    var status = updateStatusRequest.Status;
+    var errorMessage = updateStatusRequest.ErrorMessage;
+
     var values = new Dictionary<string, AttributeValue>
     {
         [":status"] = new AttributeValue { S = status },
@@ -53,18 +58,28 @@ public class DynamoDbService : IDynamoDbService
     var request = new UpdateItemRequest
     {
         TableName = TABLE_NAME,
-        Key = new() { ["documentId"] = new AttributeValue { S = fileId } },
-        UpdateExpression = updateExpr,
-        ExpressionAttributeNames = new() 
-        { 
-            ["#status"] = "status",
-            ["#updatedAt"] = "updatedAt"  // ← ADD THIS LINE
+
+        // 🔥 PRIMARY KEY
+        Key = new Dictionary<string, AttributeValue>
+        {
+            ["documentId"] = new AttributeValue { S = fileId }
         },
-        ExpressionAttributeValues = values
+
+        UpdateExpression = updateExpr,
+
+        ExpressionAttributeNames = new Dictionary<string, string>
+        {
+            ["#status"] = "status",
+            ["#updatedAt"] = "updatedAt"
+        },
+
+        ExpressionAttributeValues = values,
+
+        ConditionExpression = "attribute_exists(documentId)"
     };
 
     await _dynamoClient.UpdateItemAsync(request);
-    }
+}
 
     public async Task<List<DocumentEntity>> GetDocumentsAsync(DocumentQuery query)
     {
