@@ -1,0 +1,10 @@
+bin/
+obj/
+.vs/
+.vscode/
+*.dll
+*.exe
+*.pdb
+node_modules/
+.env
+appsettings.local.json
