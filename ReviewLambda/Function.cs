@@ -48,12 +48,16 @@ public class Function
             
             request.PathParameters ??= new Dictionary<string, string>();
             request.PathParameters.TryGetValue("documentId", out var documentId);
+            _logger.LogInformation(
+                "ReviewLambda processing documentId: {DocumentId}",
+                documentId);
 
-            var body = JsonSerializer.Deserialize<UpdateStatusRequest>(
-                request.Body ?? string.Empty,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var json = JsonSerializer.Deserialize<JsonElement>(request.Body);
 
-            var status = body?.Status;
+            var status = json.GetProperty("status").GetString();
+
+            _logger.LogInformation(
+                "ReviewLambda processing status: {Status}", status);
 
             if (string.IsNullOrWhiteSpace(documentId) || string.IsNullOrWhiteSpace(status))
             {

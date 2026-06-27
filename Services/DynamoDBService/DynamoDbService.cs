@@ -38,9 +38,13 @@ public class DynamoDbService : IDynamoDbService
 
     public async Task UpdateFileStatusAsync(UpdateStatusRequest updateStatusRequest)
 {
+     _logger.LogInformation("Updating document status: {DocumentId} -> {Status}, ErrorMessage: {ErrorMessage}", updateStatusRequest.DocumentId, updateStatusRequest.Status, updateStatusRequest.ErrorMessage);
+   
     var fileId = updateStatusRequest.DocumentId;
     var status = updateStatusRequest.Status;
     var errorMessage = updateStatusRequest.ErrorMessage;
+
+      _logger.LogInformation("Updating document status: {DocumentId} -> {Status}, ErrorMessage: {ErrorMessage}", fileId, status, errorMessage);
 
     var values = new Dictionary<string, AttributeValue>
     {
