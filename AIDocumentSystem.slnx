@@ -3,6 +3,7 @@
   <Project Path="Core/Core.csproj" />
   <Project Path="Infrastructure/Infrastructure.csproj" />
   <Project Path="NotificationLambda/NotificationLambda.csproj" />
+  <Project Path="OpenSearchLambda/OpenSearchLambda.csproj" />
   <Project Path="PresightLambda/PresightLambda.csproj" />
   <Project Path="ProcessingLambda/ProcessingLambda.csproj" />
   <Project Path="QueryLambda/QueryLambda.csproj" />

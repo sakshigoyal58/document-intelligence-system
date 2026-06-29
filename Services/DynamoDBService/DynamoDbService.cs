@@ -8,11 +8,13 @@ namespace Services.DynamoDb;
 
 public class DynamoDbService : IDynamoDbService
 {
-    private static readonly IAmazonDynamoDB _dynamoClient = new AmazonDynamoDBClient();
-    private readonly ILogger<DynamoDbService> _logger ;
+    private readonly IAmazonDynamoDB _dynamoClient;
+    private readonly ILogger<DynamoDbService> _logger;
     private const string TABLE_NAME = "DocumentMetadata";
-    public DynamoDbService(ILogger<DynamoDbService> logger)
+
+    public DynamoDbService(IAmazonDynamoDB dynamoClient, ILogger<DynamoDbService> logger)
     {
+        _dynamoClient = dynamoClient;
         _logger = logger;
     }
 
