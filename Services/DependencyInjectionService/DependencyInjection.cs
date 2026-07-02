@@ -36,7 +36,8 @@ public static class DependencyInjection
         services.AddSingleton<IDynamoDbService, DynamoDbService>();
         services.AddSingleton<IRequestMapper, RequestMapper>();
         services.AddSingleton<IPdfValidator, PdfValidator>();
-        services.AddHttpClient<IOpenSearchSyncService, OpenSearchSyncService>();
+        services.AddHttpClient<IOpenSearchSyncService, OpenSearchSyncService>()
+    .ConfigurePrimaryHttpMessageHandler(() => SigV4HandlerFactory.Create());
 
         return services.BuildServiceProvider();
     }

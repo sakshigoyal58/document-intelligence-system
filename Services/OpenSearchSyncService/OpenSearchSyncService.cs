@@ -19,6 +19,19 @@ public class OpenSearchSyncService : IOpenSearchSyncService
         _settings = options.Value;
         _logger = logger;
 
+        _logger.LogInformation("OpenSearch Endpoint: {Endpoint}", _settings.Endpoint);
+        _logger.LogInformation("OpenSearch IndexName: {IndexName}", _settings.IndexName);
+
+        if (string.IsNullOrWhiteSpace(_settings.Endpoint))
+        {
+            throw new Exception("OpenSearch Endpoint is missing in configuration");
+        }
+
+        if (string.IsNullOrWhiteSpace(_settings.IndexName))
+        {
+            throw new Exception("OpenSearch IndexName is missing in configuration");
+        }
+
         if (!string.IsNullOrWhiteSpace(_settings.Endpoint))
         {
             _httpClient.BaseAddress = new Uri(_settings.Endpoint.TrimEnd('/'));
@@ -36,15 +49,18 @@ public class OpenSearchSyncService : IOpenSearchSyncService
             indexUrl);
 
         var response = await _httpClient.PutAsync(
-            indexUrl,
-            new StringContent(json, Encoding.UTF8, "application/json")
-        );
+    indexUrl,
+    new StringContent(json, Encoding.UTF8, "application/json")
+);
 
-        _logger.LogInformation(
-            "OpenSearch response for {DocumentId}: {StatusCode}",
-            payload.DocumentId,
-            response.StatusCode);
+var responseBody = await response.Content.ReadAsStringAsync();
 
-        response.EnsureSuccessStatusCode();
+_logger.LogInformation(
+    "OpenSearch response for {DocumentId}: {StatusCode} - Body: {Body}",
+    payload.DocumentId,
+    response.StatusCode,
+    responseBody);
+
+response.EnsureSuccessStatusCode();
     }
 }

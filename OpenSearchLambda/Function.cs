@@ -49,7 +49,7 @@ public class Function
                 var payload = new OpenSearchDocumentPayload
                 {
                     DocumentId = newImage["documentId"].S,
-                    FileName = newImage["documentName"].S
+                    FileName = newImage["fileName"].S
                 };
 
                 _logger.LogInformation(
