@@ -67,56 +67,76 @@ response.EnsureSuccessStatusCode();
     }
 
     public async Task<List<DocumentSearchResponse>> SearchDocumentsByNameAsync(string searchText)
+{
+    var searchUrl = $"{_settings.IndexName}/_search";
+
+    var query = new
     {
-        var searchUrl = $"{_settings.IndexName}/_search";
-
-        var query = new
+        query = new
         {
-            query = new
+            @bool = new
             {
-                fuzzy = new
+                should = new object[]
                 {
-                    FileName = new
+                    new
                     {
-                        value = searchText,
-                        fuzziness = "AUTO"
+                        fuzzy = new
+                        {
+                            FileName = new
+                            {
+                                value = searchText,
+                                fuzziness = "AUTO"
+                            }
+                        }
+                    },
+                    new
+                    {
+                        wildcard = new Dictionary<string, object>
+                        {
+                            ["FileName.keyword"] = new
+                            {
+                                value = $"*{searchText.ToLower()}*",
+                                case_insensitive = true
+                            }
+                        }
                     }
-                }
-            },
-            size = 10 // Return all matching documents
-        };
+                },
+                minimum_should_match = 1
+            }
+        },
+        size = 10
+    };
 
-        var json = JsonSerializer.Serialize(query);
+    var json = JsonSerializer.Serialize(query);
 
-        _logger.LogInformation(
-            "Searching OpenSearch for text: {SearchText} with query: {Query}",
-            searchText,
-            json);
+    _logger.LogInformation(
+        "Searching OpenSearch for text: {SearchText} with query: {Query}",
+        searchText,
+        json);
 
-        var response = await _httpClient.PostAsync(
-            searchUrl,
-            new StringContent(json, Encoding.UTF8, "application/json")
-        );
+    var response = await _httpClient.PostAsync(
+        searchUrl,
+        new StringContent(json, Encoding.UTF8, "application/json")
+    );
 
-        var responseBody = await response.Content.ReadAsStringAsync();
+    var responseBody = await response.Content.ReadAsStringAsync();
 
-        _logger.LogInformation(
-            "OpenSearch search response: {StatusCode} - Body: {Body}",
-            response.StatusCode,
-            responseBody);
+    _logger.LogInformation(
+        "OpenSearch search response: {StatusCode} - Body: {Body}",
+        response.StatusCode,
+        responseBody);
 
-        response.EnsureSuccessStatusCode();
+    response.EnsureSuccessStatusCode();
 
-        // Parse response and map to DocumentSearchResponse
-        var results = ParseSearchResults(responseBody);
+    var results = ParseSearchResults(responseBody);
 
-        _logger.LogInformation(
-            "Found {Count} matching documents for search text: {SearchText}",
-            results.Count,
-            searchText);
+    _logger.LogInformation(
+        "Found {Count} matching documents for search text: {SearchText}",
+        results.Count,
+        searchText);
 
-        return results;
-    }
+    return results;
+}
 
     private List<DocumentSearchResponse> ParseSearchResults(string responseBody)
     {
