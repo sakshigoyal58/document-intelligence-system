@@ -10,5 +10,6 @@
   <Project Path="ReviewLambda/ReviewLambda.csproj" />
   <Project Path="SearchTextLambda/SearchTextLambda.csproj" />
   <Project Path="Services/Services.csproj" />
+  <Project Path="TextProcessingLambda/TextProcessingLambda.csproj" />
   <Project Path="UploadLambda/UploadLambda.csproj" />
 </Solution>

@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Amazon.DynamoDBv2;
+using Amazon.S3;
 using Microsoft.Extensions.Logging;
 using Services.DynamoDb;
 using Business.Helper;
@@ -7,6 +8,8 @@ using Services.OpenSearch;
 using Microsoft.Extensions.Configuration;
 using Core.Models;
 using Business.Validation;
+using Services.S3Service;
+using Services.DocumentTextExtractionAndProcessingService;
 
 namespace Services.DependencyInjection;
 
@@ -37,7 +40,11 @@ public static class DependencyInjection
         services.AddSingleton<IRequestMapper, RequestMapper>();
         services.AddSingleton<IPdfValidator, PdfValidator>();
         services.AddHttpClient<IOpenSearchSyncService, OpenSearchSyncService>()
-    .ConfigurePrimaryHttpMessageHandler(() => SigV4HandlerFactory.Create());
+            .ConfigurePrimaryHttpMessageHandler(() => SigV4HandlerFactory.Create());
+
+        services.AddSingleton<IAmazonS3, AmazonS3Client>();
+        services.AddSingleton<IS3Service, s3Service>();
+        services.AddSingleton<IDocumentTextProcessingService, DocumentTextProcessingService>();
 
         return services.BuildServiceProvider();
     }
