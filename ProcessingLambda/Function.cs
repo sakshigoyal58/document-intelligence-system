@@ -71,7 +71,8 @@ public class Function
     private async Task ProcessFile(
         S3EventNotificationRecord record)
     {
-        var fileName = record.S3.Object.Key;
+        var s3Key = record.S3.Object.Key;                  
+        var fileName = ExtractOriginalFileName(s3Key);       
         var fileSize = record.S3.Object.Size;
         var fileId = Guid.NewGuid().ToString();
 
@@ -80,7 +81,7 @@ public class Function
             fileName, fileSize);
 
         await _dynamoDBService.AddFileRecordAsync(
-            fileId, fileName, fileSize);
+            fileId, fileName, fileSize, s3Key);
 
         _logger.LogInformation("Record created {FileId}", fileId);
 
@@ -108,4 +109,12 @@ public class Function
             _logger.LogWarning("Validation failed {Error}", validation.Error);
         }
     }
+
+    private static string ExtractOriginalFileName(string s3Key)
+{
+    var separatorIndex = s3Key.IndexOf("__", StringComparison.Ordinal);
+    return separatorIndex >= 0
+        ? s3Key[(separatorIndex + 2)..]
+        : s3Key; // fallback for any old/unexpected keys without the separator
+}
 }

@@ -50,7 +50,8 @@ public class Function
 
     private static string BuildFileKey(string fileName)
     {
-        return $"sakshi/{fileName.Trim()}";
+        var uniqueId = Guid.NewGuid().ToString();
+        return $"sakshi/{uniqueId}__{fileName.Trim()}";
     }
 
     private static string GetBucketName()

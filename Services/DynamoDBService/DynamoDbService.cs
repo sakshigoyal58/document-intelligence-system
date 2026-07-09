@@ -18,8 +18,7 @@ public class DynamoDbService : IDynamoDbService
         _logger = logger;
     }
 
-
-    public async Task AddFileRecordAsync(string fileId, string fileName, long fileSize)
+    public async Task AddFileRecordAsync(string fileId, string fileName, long fileSize, string s3Key)
     {
         var request = new PutItemRequest
         {
@@ -29,6 +28,7 @@ public class DynamoDbService : IDynamoDbService
                 ["documentId"] = new AttributeValue { S = fileId },
                 ["fileName"] = new AttributeValue { S = fileName },
                 ["fileSize"] = new AttributeValue { N = fileSize.ToString() },
+                ["s3Key"] = new AttributeValue { S = s3Key },
                 ["status"] = new AttributeValue { S = "FILE_UPLOADED" },
                 ["createdAt"] = new AttributeValue { S = DateTime.UtcNow.ToString("O") },
                 ["updatedAt"] = new AttributeValue { S = DateTime.UtcNow.ToString("O") }
