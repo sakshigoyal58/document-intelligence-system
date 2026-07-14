@@ -9,7 +9,10 @@
     <PackageReference Include="AWSSDK.Core" Version="4.0.100.1" />
     <PackageReference Include="AWSSDK.DynamoDBv2" Version="4.0.21.2" />
     <PackageReference Include="AWSSDK.S3" Version="4.0.100.1" />
+    <PackageReference Include="AWSSDK.Textract" Version="4.0.100.1" />
     <PackageReference Include="AwsSignatureVersion4" Version="5.1.0" />
+    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="4.0.100.1" />
+    <PackageReference Include="Amazon.Lambda.Logging.AspNetCore" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.9" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.0" />
