@@ -1,3 +1,4 @@
+using System.Text;
 using Amazon.Textract;
 using Amazon.Textract.Model;
 using Microsoft.Extensions.Logging;
@@ -51,5 +52,46 @@ public class TextractService : ITextractService
             response.JobId, s3Key);
 
         return response.JobId;
+    }
+
+    public async Task<string> GetExtractedTextAsync(string jobId)
+    {
+        var allBlocks = new List<Block>();
+        string? nextToken = null;
+
+        do
+        {
+            var request = new GetDocumentTextDetectionRequest
+            {
+                JobId = jobId,
+                NextToken = nextToken
+            };
+
+            var response = await _textractClient.GetDocumentTextDetectionAsync(request);
+
+            allBlocks.AddRange(response.Blocks);
+            nextToken = response.NextToken;
+        }
+        while (!string.IsNullOrEmpty(nextToken));
+
+        var text = BuildTextFromBlocks(allBlocks);
+
+        _logger.LogInformation(
+            "Retrieved {CharCount} characters from Textract job {JobId}",
+            text.Length, jobId);
+
+        return text;
+    }
+
+    private static string BuildTextFromBlocks(List<Block> blocks)
+    {
+        var textBuilder = new StringBuilder();
+
+        foreach (var block in blocks.Where(b => b.BlockType == BlockType.LINE))
+        {
+            textBuilder.AppendLine(block.Text);
+        }
+
+        return textBuilder.ToString();
     }
 }
