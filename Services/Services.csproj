@@ -6,7 +6,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.Core" Version="4.0.100.1" />
+    <PackageReference Include="AWSSDK.BedrockRuntime" Version="4.0.100.5" />
+    <PackageReference Include="AWSSDK.Core" Version="4.0.100.6" />
     <PackageReference Include="AWSSDK.DynamoDBv2" Version="4.0.21.2" />
     <PackageReference Include="AWSSDK.S3" Version="4.0.100.1" />
     <PackageReference Include="AWSSDK.Textract" Version="4.0.100.1" />
@@ -19,6 +20,8 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="10.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.0" />
+    <PackageReference Include="Microsoft.ML.Tokenizers" Version="2.0.0" />
+    <PackageReference Include="Microsoft.ML.Tokenizers.Data.Cl100kBase" Version="2.0.0" />
     <PackageReference Include="OpenSearch.Client" Version="1.8.0" />
     <PackageReference Include="OpenSearch.Net" Version="1.8.0" />
   </ItemGroup>

@@ -15,7 +15,7 @@
     <PackageReference Include="Amazon.Lambda.DynamoDBEvents" Version="3.0.0" />
     <PackageReference Include="Amazon.Lambda.Serialization.SystemTextJson" Version="2.4.5" />
     <PackageReference Include="Amazon.Lambda.Logging.AspNetCore" Version="5.0.0" />
-    <PackageReference Include="AWSSDK.Core" Version="4.0.100.1" />
+    <PackageReference Include="AWSSDK.Core" Version="4.0.100.6" />
     <PackageReference Include="AwsSignatureVersion4" Version="5.1.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.9" />
     <PackageReference Include="OpenSearch.Client" Version="1.8.0" />

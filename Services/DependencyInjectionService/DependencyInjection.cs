@@ -12,6 +12,9 @@ using Business.Validation;
 using Services.S3Service;
 using Services.DocumentTextExtractionAndProcessingService;
 using Services.TextractServices;
+using Amazon.BedrockRuntime;
+using Services.EmbeddingServices;
+using Services.TextChunkingServices;
 
 namespace Services.DependencyInjection;
 
@@ -50,6 +53,9 @@ public static class DependencyInjection
         services.AddSingleton<ITextractJobTrackingService, TextractJobTrackingService>();
         services.AddSingleton<IS3Service, s3Service>();
         services.AddSingleton<IDocumentTextProcessingService, DocumentTextProcessingService>();
+        services.AddAWSService<IAmazonBedrockRuntime>();
+        services.AddHttpClient<IEmbeddingService, EmbeddingService>();
+        services.AddSingleton<ITextChunkingService, TextChunkingService>();
 
         return services.BuildServiceProvider();
     }
