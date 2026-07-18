@@ -3,8 +3,14 @@
   <Project Path="Core/Core.csproj" />
   <Project Path="Infrastructure/Infrastructure.csproj" />
   <Project Path="NotificationLambda/NotificationLambda.csproj" />
+  <Project Path="OpenSearchLambda/OpenSearchLambda.csproj" />
+  <Project Path="PresightLambda/PresightLambda.csproj" />
   <Project Path="ProcessingLambda/ProcessingLambda.csproj" />
   <Project Path="QueryLambda/QueryLambda.csproj" />
+  <Project Path="ReviewLambda/ReviewLambda.csproj" />
+  <Project Path="SearchTextLambda/SearchTextLambda.csproj" />
   <Project Path="Services/Services.csproj" />
+  <Project Path="TextProcessingLambda/TextProcessingLambda.csproj" />
+  <Project Path="TextractResultLambda/TextractResultLambda.csproj" />
   <Project Path="UploadLambda/UploadLambda.csproj" />
 </Solution>
