@@ -17,6 +17,7 @@ using Services.EmbeddingServices;
 using Services.TextChunkingServices;
 using Amazon.SQS;
 using Services.QueueServices;
+using Services.AIService;
 
 namespace Services.DependencyInjection;
 
@@ -60,6 +61,7 @@ public static class DependencyInjection
         services.AddSingleton<ITextChunkingService, TextChunkingService>();
         services.AddSingleton<IChunkQueueService, ChunkQueueService>();
         services.AddAWSService<IAmazonSQS>();
+        services.AddHttpClient<IGeminiAnswerGenerationService, GeminiAnswerGenerationService>();
 
         return services.BuildServiceProvider();
     }

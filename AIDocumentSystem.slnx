@@ -7,6 +7,9 @@
   <Project Path="OpenSearchWriterLambda/OpenSearchWriterLambda.csproj" />
   <Project Path="PresightLambda/PresightLambda.csproj" />
   <Project Path="ProcessingLambda/ProcessingLambda.csproj" />
+  <Project Path="QAEmbedQuestionLambda/QAEmbedQuestionLambda.csproj" />
+  <Project Path="QAOpenSearchChunksLambda/QAOpenSearchChunksLambda.csproj" />
+  <Project Path="GeminiAnswerGenerationLambda/GeminiAnswerGenerationLambda.csproj" />
   <Project Path="QueryLambda/QueryLambda.csproj" />
   <Project Path="ReviewLambda/ReviewLambda.csproj" />
   <Project Path="SearchTextLambda/SearchTextLambda.csproj" />

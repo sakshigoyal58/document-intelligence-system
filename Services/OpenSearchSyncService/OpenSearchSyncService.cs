@@ -249,4 +249,81 @@ public class OpenSearchSyncService : IOpenSearchSyncService
 
         response.EnsureSuccessStatusCode();
     }
+
+    public async Task<List<string>> SearchChunksByVectorAsync(string documentId, float[] vector, int topK = 3)
+    {
+        var searchUrl = "document-chunks/_search";
+
+        var query = new
+        {
+            size = topK,
+            query = new
+            {
+                @bool = new
+                {
+                    must = new object[]
+                    {
+                    new
+                    {
+                        knn = new
+                        {
+                            chunkVector = new
+                            {
+                                vector,
+                                k = topK
+                            }
+                        }
+                    }
+                    },
+                    filter = new object[]
+                    {
+                    new { term = new { documentId } }
+                    }
+                }
+            }
+        };
+
+        var json = JsonSerializer.Serialize(query);
+
+        _logger.LogInformation(
+            "Searching document-chunks for documentId {DocumentId}, top {TopK}",
+            documentId, topK);
+
+        var response = await _httpClient.PostAsync(
+            searchUrl,
+            new StringContent(json, Encoding.UTF8, "application/json")
+        );
+
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        _logger.LogInformation(
+            "OpenSearch chunk search response: {StatusCode} - {Body}",
+            response.StatusCode, responseBody);
+
+        response.EnsureSuccessStatusCode();
+
+        var chunks = new List<string>();
+
+        using var doc = JsonDocument.Parse(responseBody);
+        if (doc.RootElement.TryGetProperty("hits", out var hits) &&
+            hits.TryGetProperty("hits", out var hitsArray))
+        {
+            foreach (var hit in hitsArray.EnumerateArray())
+            {
+                if (hit.TryGetProperty("_source", out var source) &&
+                    source.TryGetProperty("chunkText", out var chunkTextElement))
+                {
+                    var chunkText = chunkTextElement.GetString();
+                    if (!string.IsNullOrEmpty(chunkText))
+                    {
+                        chunks.Add(chunkText);
+                    }
+                }
+            }
+        }
+
+        _logger.LogInformation("Found {Count} matching chunk(s) for document {DocumentId}", chunks.Count, documentId);
+
+        return chunks;
+    }
 }
