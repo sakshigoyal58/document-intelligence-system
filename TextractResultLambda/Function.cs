@@ -4,10 +4,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Services.DependencyInjection;
 using Services.TextractServices;
-
-using System.Text.Json;
 using Services.TextChunkingServices;
 using Services.EmbeddingServices;
+using Services.QueueServices;
+using System.Text.Json;
 
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
 
@@ -23,6 +23,7 @@ public class Function
     private readonly ITextractJobTrackingService _textractJobTrackingService;
     private readonly ITextChunkingService _chunkingService;
     private readonly IEmbeddingService _embeddingService;
+    private readonly IChunkQueueService _chunkQueueService;
 
     public Function()
     {
@@ -31,6 +32,7 @@ public class Function
         _textractJobTrackingService = _provider.GetRequiredService<ITextractJobTrackingService>();
         _chunkingService = _provider.GetRequiredService<ITextChunkingService>();
         _embeddingService = _provider.GetRequiredService<IEmbeddingService>();
+        _chunkQueueService = _provider.GetRequiredService<IChunkQueueService>();
     }
 
     public async Task FunctionHandler(SNSEvent snsEvent, ILambdaContext context)
@@ -93,6 +95,8 @@ public class Function
                         "Chunked document {DocumentId} into {ChunkCount} chunk(s)",
                         documentId, chunks.Count);
 
+                    var chunkPayloads = new List<ChunkPayload>();
+
                     foreach (var (chunk, index) in chunks.Select((c, i) => (c, i)))
                     {
                         var embedding = await _embeddingService.GenerateEmbeddingAsync(chunk);
@@ -101,14 +105,23 @@ public class Function
                             "Generated embedding for chunk {Index} of document {DocumentId}. Vector length: {Length}",
                             index, documentId, embedding.Length);
 
-                        // NEXT STEP: save {chunk text, embedding, documentId, index} to OpenSearch
+                        chunkPayloads.Add(new ChunkPayload
+                        {
+                            ChunkIndex = index,
+                            ChunkText = chunk,
+                            Vector = embedding
+                        });
                     }
 
-                    // TEMPORARY: marking COMPLETED here for now.
-                    // Once the OpenSearch save step is added, move this AFTER that
-                    // succeeds, so COMPLETED means "fully searchable", not just
-                    // "text extracted and embedded".
-                    await _textractJobTrackingService.UpdateStatusAsync(jobId, "COMPLETED");
+                    await _chunkQueueService.SendChunksForIndexingAsync(jobId, documentId, chunkPayloads);
+
+                    _logger.LogInformation(
+                        "Sent {Count} chunk(s) to SQS for document {DocumentId}. OpenSearchWriterLambda will handle indexing and mark status COMPLETED.",
+                        chunkPayloads.Count, documentId);
+
+                    // NOTE: status is NOT marked COMPLETED here anymore.
+                    // OpenSearchWriterLambda marks it COMPLETED once chunks are
+                    // actually saved to OpenSearch.
                 }
                 else
                 {

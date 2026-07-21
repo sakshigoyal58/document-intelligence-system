@@ -15,6 +15,8 @@ using Services.TextractServices;
 using Amazon.BedrockRuntime;
 using Services.EmbeddingServices;
 using Services.TextChunkingServices;
+using Amazon.SQS;
+using Services.QueueServices;
 
 namespace Services.DependencyInjection;
 
@@ -56,6 +58,8 @@ public static class DependencyInjection
         services.AddAWSService<IAmazonBedrockRuntime>();
         services.AddHttpClient<IEmbeddingService, EmbeddingService>();
         services.AddSingleton<ITextChunkingService, TextChunkingService>();
+        services.AddSingleton<IChunkQueueService, ChunkQueueService>();
+        services.AddAWSService<IAmazonSQS>();
 
         return services.BuildServiceProvider();
     }

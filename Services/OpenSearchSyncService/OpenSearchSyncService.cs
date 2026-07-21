@@ -55,29 +55,29 @@ public class OpenSearchSyncService : IOpenSearchSyncService
     new StringContent(json, Encoding.UTF8, "application/json")
 );
 
-var responseBody = await response.Content.ReadAsStringAsync();
+        var responseBody = await response.Content.ReadAsStringAsync();
 
-_logger.LogInformation(
-    "OpenSearch response for {DocumentId}: {StatusCode} - Body: {Body}",
-    payload.DocumentId,
-    response.StatusCode,
-    responseBody);
+        _logger.LogInformation(
+            "OpenSearch response for {DocumentId}: {StatusCode} - Body: {Body}",
+            payload.DocumentId,
+            response.StatusCode,
+            responseBody);
 
-response.EnsureSuccessStatusCode();
+        response.EnsureSuccessStatusCode();
     }
 
     public async Task<List<DocumentSearchResponse>> SearchDocumentsByNameAsync(string searchText)
-{
-    var searchUrl = $"{_settings.IndexName}/_search";
-
-    var query = new
     {
-        query = new
+        var searchUrl = $"{_settings.IndexName}/_search";
+
+        var query = new
         {
-            @bool = new
+            query = new
             {
-                should = new object[]
+                @bool = new
                 {
+                    should = new object[]
+                    {
                     new
                     {
                         fuzzy = new
@@ -100,43 +100,43 @@ response.EnsureSuccessStatusCode();
                             }
                         }
                     }
-                },
-                minimum_should_match = 1
-            }
-        },
-        size = 10
-    };
+                    },
+                    minimum_should_match = 1
+                }
+            },
+            size = 10
+        };
 
-    var json = JsonSerializer.Serialize(query);
+        var json = JsonSerializer.Serialize(query);
 
-    _logger.LogInformation(
-        "Searching OpenSearch for text: {SearchText} with query: {Query}",
-        searchText,
-        json);
+        _logger.LogInformation(
+            "Searching OpenSearch for text: {SearchText} with query: {Query}",
+            searchText,
+            json);
 
-    var response = await _httpClient.PostAsync(
-        searchUrl,
-        new StringContent(json, Encoding.UTF8, "application/json")
-    );
+        var response = await _httpClient.PostAsync(
+            searchUrl,
+            new StringContent(json, Encoding.UTF8, "application/json")
+        );
 
-    var responseBody = await response.Content.ReadAsStringAsync();
+        var responseBody = await response.Content.ReadAsStringAsync();
 
-    _logger.LogInformation(
-        "OpenSearch search response: {StatusCode} - Body: {Body}",
-        response.StatusCode,
-        responseBody);
+        _logger.LogInformation(
+            "OpenSearch search response: {StatusCode} - Body: {Body}",
+            response.StatusCode,
+            responseBody);
 
-    response.EnsureSuccessStatusCode();
+        response.EnsureSuccessStatusCode();
 
-    var results = ParseSearchResults(responseBody);
+        var results = ParseSearchResults(responseBody);
 
-    _logger.LogInformation(
-        "Found {Count} matching documents for search text: {SearchText}",
-        results.Count,
-        searchText);
+        _logger.LogInformation(
+            "Found {Count} matching documents for search text: {SearchText}",
+            results.Count,
+            searchText);
 
-    return results;
-}
+        return results;
+    }
 
     private List<DocumentSearchResponse> ParseSearchResults(string responseBody)
     {
@@ -170,5 +170,83 @@ response.EnsureSuccessStatusCode();
         }
 
         return results;
+    }
+
+    public async Task<string> CreateChunksIndexAsync()
+    {
+        var indexMapping = new
+        {
+            settings = new
+            {
+                index = new { knn = true }
+            },
+            mappings = new
+            {
+                properties = new
+                {
+                    documentId = new { type = "keyword" },
+                    chunkIndex = new { type = "integer" },
+                    chunkText = new { type = "text" },
+                    chunkVector = new
+                    {
+                        type = "knn_vector",
+                        dimension = 3072,
+                        method = new
+                        {
+                            name = "hnsw",
+                            space_type = "cosinesimil",
+                            engine = "lucene"
+                        }
+                    },
+                    createdAt = new { type = "date" }
+                }
+            }
+        };
+
+        var json = JsonSerializer.Serialize(indexMapping);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+        var response = await _httpClient.PutAsync("document-chunks", content);
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        _logger.LogInformation(
+            "Create index response: {StatusCode} - {Body}",
+            response.StatusCode, responseBody);
+
+        return responseBody;
+    }
+
+    public async Task IndexChunkAsync(string documentId, int chunkIndex, string chunkText, float[] vector)
+    {
+        var chunkId = $"{documentId}_{chunkIndex}"; // stable ID — prevents duplicates on reprocessing
+        var indexUrl = $"document-chunks/_doc/{chunkId}";
+
+        var payload = new
+        {
+            documentId,
+            chunkIndex,
+            chunkText,
+            chunkVector = vector,
+            createdAt = DateTime.UtcNow.ToString("O")
+        };
+
+        var json = JsonSerializer.Serialize(payload);
+
+        _logger.LogInformation(
+            "Indexing chunk {ChunkIndex} for document {DocumentId} to {IndexUrl}",
+            chunkIndex, documentId, indexUrl);
+
+        var response = await _httpClient.PutAsync(
+            indexUrl,
+            new StringContent(json, Encoding.UTF8, "application/json")
+        );
+
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        _logger.LogInformation(
+            "OpenSearch chunk index response: {StatusCode} - {Body}",
+            response.StatusCode, responseBody);
+
+        response.EnsureSuccessStatusCode();
     }
 }

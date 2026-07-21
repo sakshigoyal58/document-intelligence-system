@@ -10,6 +10,7 @@
     <PackageReference Include="AWSSDK.Core" Version="4.0.100.6" />
     <PackageReference Include="AWSSDK.DynamoDBv2" Version="4.0.21.2" />
     <PackageReference Include="AWSSDK.S3" Version="4.0.100.1" />
+    <PackageReference Include="AWSSDK.SQS" Version="4.0.100.5" />
     <PackageReference Include="AWSSDK.Textract" Version="4.0.100.1" />
     <PackageReference Include="AwsSignatureVersion4" Version="5.1.0" />
     <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="4.0.100.1" />
