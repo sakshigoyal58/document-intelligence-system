@@ -5,7 +5,9 @@ using Services.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Services.DynamoDb;
+using Core.Constants;
 using Core.DTOs;
+using Core.Helpers;
 using static Amazon.Lambda.S3Events.S3Event;
 
 [assembly: LambdaSerializer(
@@ -55,7 +57,14 @@ public class Function
         {
             foreach (var record in s3Event.Records)
             {
-                await ProcessFile(record);
+                try
+                {
+                    await ProcessFile(record);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Failed to process S3 event record for key {S3Key}", record.S3.Object.Key);
+                }
             }
         }
         catch (Exception ex)
@@ -71,19 +80,19 @@ public class Function
     private async Task ProcessFile(
         S3EventNotificationRecord record)
     {
-        var s3Key = record.S3.Object.Key;                  
-        var fileName = ExtractOriginalFileName(s3Key);       
+        var s3Key = record.S3.Object.Key;
         var fileSize = record.S3.Object.Size;
-        var fileId = Guid.NewGuid().ToString();
+
+        if (string.IsNullOrWhiteSpace(s3Key))
+        {
+            throw new InvalidOperationException("S3 object key is missing.");
+        }
+
+        var (documentId, fileName) = DocumentStorageKey.Parse(s3Key);
 
         _logger.LogInformation(
-            "Processing file {FileName} ({FileSize} bytes)",
-            fileName, fileSize);
-
-        await _dynamoDBService.AddFileRecordAsync(
-            fileId, fileName, fileSize, s3Key);
-
-        _logger.LogInformation("Record created {FileId}", fileId);
+            "Processing file {FileName} ({FileSize} bytes) for document {DocumentId}",
+            fileName, fileSize, documentId);
 
         var validation = _validator.Validate(fileName, fileSize);
 
@@ -91,30 +100,22 @@ public class Function
         {
             await _dynamoDBService.UpdateFileStatusAsync(new UpdateStatusRequest
             {
-                DocumentId = fileId,
-                Status = "VALIDATED"
+                DocumentId = documentId,
+                Status = DocumentStatus.Validated
             });
 
-            _logger.LogInformation("Validated {FileId}", fileId);
+            _logger.LogInformation("Validated {DocumentId}", documentId);
         }
         else
         {
             await _dynamoDBService.UpdateFileStatusAsync(new UpdateStatusRequest
             {
-                DocumentId = fileId,
-                Status = "VALIDATION_FAILED",
+                DocumentId = documentId,
+                Status = DocumentStatus.Invalidated,
                 ErrorMessage = validation.Error
             });
 
-            _logger.LogWarning("Validation failed {Error}", validation.Error);
+            _logger.LogWarning("Validation failed for {DocumentId}: {Error}", documentId, validation.Error);
         }
     }
-
-    private static string ExtractOriginalFileName(string s3Key)
-{
-    var separatorIndex = s3Key.IndexOf("__", StringComparison.Ordinal);
-    return separatorIndex >= 0
-        ? s3Key[(separatorIndex + 2)..]
-        : s3Key; // fallback for any old/unexpected keys without the separator
-}
 }

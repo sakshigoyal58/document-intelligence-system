@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Services.DependencyInjection;
 using Services.OpenSearch;
+using Core.Constants;
 using Core.Models;
 
 [assembly: LambdaSerializer(
@@ -45,6 +46,13 @@ public class Function
                     continue;
 
                 var newImage = record.Dynamodb.NewImage;
+
+                var status = newImage.TryGetValue("status", out var statusAttr) ? statusAttr.S : string.Empty;
+                if (!string.Equals(status, DocumentStatus.Validated, StringComparison.OrdinalIgnoreCase))
+                {
+                    _logger.LogInformation("Skipping OpenSearch indexing for {DocumentId} because status is {Status}", newImage["documentId"].S, status);
+                    continue;
+                }
 
                 var payload = new OpenSearchDocumentPayload
                 {

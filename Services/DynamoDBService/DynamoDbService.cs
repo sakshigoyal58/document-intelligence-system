@@ -1,5 +1,6 @@
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
+using Core.Constants;
 using Core.Models;
 using Core.DTOs;
 using Microsoft.Extensions.Logging;
@@ -20,72 +21,112 @@ public class DynamoDbService : IDynamoDbService
 
     public async Task AddFileRecordAsync(string fileId, string fileName, long fileSize, string s3Key)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(fileId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(fileName);
+        ArgumentException.ThrowIfNullOrWhiteSpace(s3Key);
+
+        await UpsertFileRecordAsync(new UpdateStatusRequest
+        {
+            DocumentId = fileId,
+            FileName = fileName,
+            FileSize = fileSize,
+            S3Key = s3Key,
+            Status = DocumentStatus.Uploading
+        });
+    }
+
+    public async Task UpsertFileRecordAsync(UpdateStatusRequest updateStatusRequest)
+    {
+        ArgumentNullException.ThrowIfNull(updateStatusRequest);
+        ArgumentException.ThrowIfNullOrWhiteSpace(updateStatusRequest.DocumentId);
+
+        var now = DateTime.UtcNow.ToString("O");
+        var item = new Dictionary<string, AttributeValue>
+        {
+            ["documentId"] = new AttributeValue { S = updateStatusRequest.DocumentId },
+            ["status"] = new AttributeValue { S = updateStatusRequest.Status },
+            ["updatedAt"] = new AttributeValue { S = now }
+        };
+
+        if (!string.IsNullOrWhiteSpace(updateStatusRequest.FileName))
+        {
+            item["fileName"] = new AttributeValue { S = updateStatusRequest.FileName };
+        }
+
+        if (updateStatusRequest.FileSize.HasValue)
+        {
+            item["fileSize"] = new AttributeValue { N = updateStatusRequest.FileSize.Value.ToString() };
+        }
+
+        if (!string.IsNullOrWhiteSpace(updateStatusRequest.S3Key))
+        {
+            item["s3Key"] = new AttributeValue { S = updateStatusRequest.S3Key };
+        }
+
+        if (!string.IsNullOrWhiteSpace(updateStatusRequest.ErrorMessage))
+        {
+            item["ErrorMessage"] = new AttributeValue { S = updateStatusRequest.ErrorMessage };
+        }
+
+        if (!item.ContainsKey("createdAt"))
+        {
+            item["createdAt"] = new AttributeValue { S = now };
+        }
+
         var request = new PutItemRequest
         {
             TableName = TABLE_NAME,
-            Item = new()
-            {
-                ["documentId"] = new AttributeValue { S = fileId },
-                ["fileName"] = new AttributeValue { S = fileName },
-                ["fileSize"] = new AttributeValue { N = fileSize.ToString() },
-                ["s3Key"] = new AttributeValue { S = s3Key },
-                ["status"] = new AttributeValue { S = "FILE_UPLOADED" },
-                ["createdAt"] = new AttributeValue { S = DateTime.UtcNow.ToString("O") },
-                ["updatedAt"] = new AttributeValue { S = DateTime.UtcNow.ToString("O") }
-            }
+            Item = item
         };
 
         await _dynamoClient.PutItemAsync(request);
     }
 
     public async Task UpdateFileStatusAsync(UpdateStatusRequest updateStatusRequest)
-{
-     _logger.LogInformation("Updating document status: {DocumentId} -> {Status}, ErrorMessage: {ErrorMessage}", updateStatusRequest.DocumentId, updateStatusRequest.Status, updateStatusRequest.ErrorMessage);
-   
-    var fileId = updateStatusRequest.DocumentId;
-    var status = updateStatusRequest.Status;
-    var errorMessage = updateStatusRequest.ErrorMessage;
-
-      _logger.LogInformation("Updating document status: {DocumentId} -> {Status}, ErrorMessage: {ErrorMessage}", fileId, status, errorMessage);
-
-    var values = new Dictionary<string, AttributeValue>
     {
-        [":status"] = new AttributeValue { S = status },
-        [":ts"] = new AttributeValue { S = DateTime.UtcNow.ToString("O") }
-    };
+        ArgumentNullException.ThrowIfNull(updateStatusRequest);
+        ArgumentException.ThrowIfNullOrWhiteSpace(updateStatusRequest.DocumentId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(updateStatusRequest.Status);
 
-    if (errorMessage != null)
-        values[":err"] = new AttributeValue { S = errorMessage };
+        _logger.LogInformation(
+            "Updating document status: {DocumentId} -> {Status}",
+            updateStatusRequest.DocumentId,
+            updateStatusRequest.Status);
 
-    var updateExpr = errorMessage != null
-        ? "SET #status = :status, #updatedAt = :ts, ErrorMessage = :err"
-        : "SET #status = :status, #updatedAt = :ts";
-
-    var request = new UpdateItemRequest
-    {
-        TableName = TABLE_NAME,
-
-        // 🔥 PRIMARY KEY
-        Key = new Dictionary<string, AttributeValue>
+        var values = new Dictionary<string, AttributeValue>
         {
-            ["documentId"] = new AttributeValue { S = fileId }
-        },
+            [":status"] = new AttributeValue { S = updateStatusRequest.Status },
+            [":ts"] = new AttributeValue { S = DateTime.UtcNow.ToString("O") }
+        };
 
-        UpdateExpression = updateExpr,
-
-        ExpressionAttributeNames = new Dictionary<string, string>
+        if (!string.IsNullOrWhiteSpace(updateStatusRequest.ErrorMessage))
         {
-            ["#status"] = "status",
-            ["#updatedAt"] = "updatedAt"
-        },
+            values[":err"] = new AttributeValue { S = updateStatusRequest.ErrorMessage };
+        }
 
-        ExpressionAttributeValues = values,
+        var updateExpr = !string.IsNullOrWhiteSpace(updateStatusRequest.ErrorMessage)
+            ? "SET #status = :status, #updatedAt = :ts, ErrorMessage = :err"
+            : "SET #status = :status, #updatedAt = :ts";
 
-        ConditionExpression = "attribute_exists(documentId)"
-    };
+        var request = new UpdateItemRequest
+        {
+            TableName = TABLE_NAME,
+            Key = new Dictionary<string, AttributeValue>
+            {
+                ["documentId"] = new AttributeValue { S = updateStatusRequest.DocumentId }
+            },
+            UpdateExpression = updateExpr,
+            ExpressionAttributeNames = new Dictionary<string, string>
+            {
+                ["#status"] = "status",
+                ["#updatedAt"] = "updatedAt"
+            },
+            ExpressionAttributeValues = values,
+            ConditionExpression = "attribute_exists(documentId)"
+        };
 
-    await _dynamoClient.UpdateItemAsync(request);
-}
+        await _dynamoClient.UpdateItemAsync(request);
+    }
 
     public async Task<List<DocumentEntity>> GetDocumentsAsync(DocumentQuery query)
     {
@@ -149,24 +190,34 @@ public class DynamoDbService : IDynamoDbService
             .Where(item => item != null && item.Count > 0)
             .Select(item =>
             {
-                    return new DocumentEntity
-                    {
-                        DocumentId = GetStringValue(item, "documentId"),
-                        FileName = GetStringValue(item, "fileName"),
-                        FileStatus = GetStringValue(item, "status"),
-                        CreatedAt = DateTime.Parse(GetStringValue(item, "createdAt")),
-                        UpdatedAt = DateTime.Parse(GetStringValue(item, "updatedAt"))
-                    };
+                return new DocumentEntity
+                {
+                    DocumentId = GetStringValue(item, "documentId"),
+                    FileName = GetStringValue(item, "fileName", "untitled.pdf"),
+                    FileStatus = GetStringValue(item, "status", "UNKNOWN"),
+                    CreatedAt = GetDateTimeValue(item, "createdAt", DateTime.UtcNow),
+                    UpdatedAt = GetDateTimeValue(item, "updatedAt", DateTime.UtcNow)
+                };
             })
             .Where(doc => doc != null)
             .ToList();
     }
 
-     private static string GetStringValue(Dictionary<string, AttributeValue> item, string key)
+    private static string GetStringValue(Dictionary<string, AttributeValue> item, string key, string fallback = "")
     {
         return item.TryGetValue(key, out var value) && value?.S != null
             ? value.S
-            : throw new KeyNotFoundException($"Required field '{key}' not found in DynamoDB item");
-    } 
+            : fallback;
+    }
+
+    private static DateTime GetDateTimeValue(Dictionary<string, AttributeValue> item, string key, DateTime fallback)
+    {
+        if (item.TryGetValue(key, out var value) && value?.S != null && DateTime.TryParse(value.S, out var parsed))
+        {
+            return parsed;
+        }
+
+        return fallback;
+    }
 
 }

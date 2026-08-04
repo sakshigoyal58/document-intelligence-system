@@ -18,6 +18,7 @@ using Services.TextChunkingServices;
 using Amazon.SQS;
 using Services.QueueServices;
 using Services.AIService;
+using Core.Configuration;
 
 namespace Services.DependencyInjection;
 
@@ -42,6 +43,8 @@ public static class DependencyInjection
 
         services.Configure<OpenSearchSetting>(
             configuration.GetSection("OpenSearch"));
+
+        services.Configure<AppSettings>(configuration.GetSection(AppSettings.SectionName));
 
         services.AddAWSService<IAmazonDynamoDB>();
         services.AddSingleton<IDynamoDbService, DynamoDbService>();

@@ -1,8 +1,6 @@
 <Solution>
   <Project Path="Business/Business.csproj" />
   <Project Path="Core/Core.csproj" />
-  <Project Path="Infrastructure/Infrastructure.csproj" />
-  <Project Path="NotificationLambda/NotificationLambda.csproj" />
   <Project Path="OpenSearchLambda/OpenSearchLambda.csproj" />
   <Project Path="OpenSearchWriterLambda/OpenSearchWriterLambda.csproj" />
   <Project Path="PresightLambda/PresightLambda.csproj" />

@@ -12,4 +12,13 @@ public class UpdateStatusRequest
 
     [JsonPropertyName("errorMessage")]
     public string? ErrorMessage { get; set; }
+
+    [JsonPropertyName("fileName")]
+    public string? FileName { get; set; }
+
+    [JsonPropertyName("fileSize")]
+    public long? FileSize { get; set; }
+
+    [JsonPropertyName("s3Key")]
+    public string? S3Key { get; set; }
 }

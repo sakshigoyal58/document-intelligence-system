@@ -1,7 +1,9 @@
 using System.Text;
 using Amazon.Textract;
 using Amazon.Textract.Model;
+using Core.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Services.TextractServices;
 
@@ -13,16 +15,16 @@ public class TextractService : ITextractService
     private readonly string _snsTopicArn;
     private readonly string _snsRoleArn;
 
-    public TextractService(IAmazonTextract textractClient, ILogger<TextractService> logger)
+    public TextractService(IAmazonTextract textractClient, ILogger<TextractService> logger, IOptions<AppSettings> options)
     {
         _textractClient = textractClient;
         _logger = logger;
 
-        _bucketName = Environment.GetEnvironmentVariable("UPLOAD_BUCKET")
+        _bucketName = options.Value.UploadBucket
             ?? throw new InvalidOperationException("UPLOAD_BUCKET not configured.");
-        _snsTopicArn = Environment.GetEnvironmentVariable("TEXTRACT_SNS_TOPIC_ARN")
+        _snsTopicArn = options.Value.TextractSnsTopicArn
             ?? throw new InvalidOperationException("TEXTRACT_SNS_TOPIC_ARN not configured.");
-        _snsRoleArn = Environment.GetEnvironmentVariable("TEXTRACT_SNS_ROLE_ARN")
+        _snsRoleArn = options.Value.TextractSnsRoleArn
             ?? throw new InvalidOperationException("TEXTRACT_SNS_ROLE_ARN not configured.");
     }
 

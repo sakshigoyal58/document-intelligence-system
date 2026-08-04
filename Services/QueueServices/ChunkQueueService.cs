@@ -1,6 +1,8 @@
 using Amazon.SQS;
 using Amazon.SQS.Model;
+using Core.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Text.Json;
 
 namespace Services.QueueServices;
@@ -11,12 +13,12 @@ public class ChunkQueueService : IChunkQueueService
     private readonly ILogger<ChunkQueueService> _logger;
     private readonly string _queueUrl;
 
-    public ChunkQueueService(IAmazonSQS sqsClient, ILogger<ChunkQueueService> logger)
+    public ChunkQueueService(IAmazonSQS sqsClient, ILogger<ChunkQueueService> logger, IOptions<AppSettings> options)
     {
         _sqsClient = sqsClient;
         _logger = logger;
 
-        _queueUrl = Environment.GetEnvironmentVariable("CHUNK_QUEUE_URL")
+        _queueUrl = options.Value.ChunkQueueUrl
             ?? throw new InvalidOperationException("CHUNK_QUEUE_URL not configured.");
     }
 

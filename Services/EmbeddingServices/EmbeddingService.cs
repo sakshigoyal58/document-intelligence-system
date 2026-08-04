@@ -1,4 +1,6 @@
+using Core.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Text;
 using System.Text.Json;
 
@@ -11,12 +13,12 @@ public class EmbeddingService : IEmbeddingService
     private readonly string _apiKey;
     private const string ModelName = "gemini-embedding-001";
 
-    public EmbeddingService(HttpClient httpClient, ILogger<EmbeddingService> logger)
+    public EmbeddingService(HttpClient httpClient, ILogger<EmbeddingService> logger, IOptions<AppSettings> options)
     {
         _httpClient = httpClient;
         _logger = logger;
 
-        _apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY")
+        _apiKey = options.Value.GeminiApiKey
             ?? throw new InvalidOperationException("GEMINI_API_KEY not configured.");
     }
 

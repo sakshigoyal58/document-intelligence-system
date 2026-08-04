@@ -1,6 +1,8 @@
 using System.Text;
 using System.Text.Json;
+using Core.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Services.AIService;
 
@@ -11,12 +13,12 @@ public class GeminiAnswerGenerationService : IGeminiAnswerGenerationService
     private readonly string _apiKey;
     private const string ModelName = "gemini-3.5-flash";
 
-    public GeminiAnswerGenerationService(HttpClient httpClient, ILogger<GeminiAnswerGenerationService> logger)
+    public GeminiAnswerGenerationService(HttpClient httpClient, ILogger<GeminiAnswerGenerationService> logger, IOptions<AppSettings> options)
     {
         _httpClient = httpClient;
         _logger = logger;
 
-        _apiKey = Environment.GetEnvironmentVariable("GEMINI_API_KEY")
+        _apiKey = options.Value.GeminiApiKey
             ?? throw new InvalidOperationException("GEMINI_API_KEY not configured.");
     }
 

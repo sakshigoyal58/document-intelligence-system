@@ -1,7 +1,6 @@
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using Core.DTOs;
 using Core.Models;
 using Microsoft.Extensions.Logging;
@@ -26,12 +25,12 @@ public class OpenSearchSyncService : IOpenSearchSyncService
 
         if (string.IsNullOrWhiteSpace(_settings.Endpoint))
         {
-            throw new Exception("OpenSearch Endpoint is missing in configuration");
+            throw new InvalidOperationException("OpenSearch Endpoint is missing in configuration");
         }
 
         if (string.IsNullOrWhiteSpace(_settings.IndexName))
         {
-            throw new Exception("OpenSearch IndexName is missing in configuration");
+            throw new InvalidOperationException("OpenSearch IndexName is missing in configuration");
         }
 
         if (!string.IsNullOrWhiteSpace(_settings.Endpoint))
@@ -42,7 +41,11 @@ public class OpenSearchSyncService : IOpenSearchSyncService
 
     public async Task IndexDocumentAsync(OpenSearchDocumentPayload payload)
     {
-        var indexUrl = $"{_settings.IndexName}/_doc/{payload.DocumentId}";
+        ArgumentNullException.ThrowIfNull(payload);
+        ArgumentException.ThrowIfNullOrWhiteSpace(payload.DocumentId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(payload.FileName);
+
+        var indexUrl = $"{_settings.IndexName}/_doc/{Uri.EscapeDataString(payload.DocumentId)}";
         var json = JsonSerializer.Serialize(payload);
 
         _logger.LogInformation(
@@ -51,9 +54,9 @@ public class OpenSearchSyncService : IOpenSearchSyncService
             indexUrl);
 
         var response = await _httpClient.PutAsync(
-    indexUrl,
-    new StringContent(json, Encoding.UTF8, "application/json")
-);
+            indexUrl,
+            new StringContent(json, Encoding.UTF8, "application/json")
+        );
 
         var responseBody = await response.Content.ReadAsStringAsync();
 
@@ -61,7 +64,7 @@ public class OpenSearchSyncService : IOpenSearchSyncService
             "OpenSearch response for {DocumentId}: {StatusCode} - Body: {Body}",
             payload.DocumentId,
             response.StatusCode,
-            responseBody);
+            responseBody[..Math.Min(responseBody.Length, 400)]);
 
         response.EnsureSuccessStatusCode();
     }
