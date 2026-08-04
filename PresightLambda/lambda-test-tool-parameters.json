@@ -1,9 +1,0 @@
-{
-  "environmentVariables": {
-    "UPLOAD_BUCKET": "document-intelligence-system",
-    "BUCKET_NAME": "document-intelligence-system",
-    "S3_REGION": "us-east-1",
-    "AWS_REGION": "us-east-1"
-  }
-  
-}

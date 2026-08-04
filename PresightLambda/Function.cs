@@ -69,14 +69,17 @@ public class Function
             var bucketName = GetBucketName();
             var presignedUrl = GeneratePreSignedUrl(bucketName, fileKey);
 
+            _logger.LogInformation(
+                "PresightLambda creating initial document record. DocumentId: {DocumentId}, FileName: {FileName}, S3Key: {S3Key}",
+                documentId,
+                input.FileName,
+                fileKey);
+
             await _dynamoDBService.AddFileRecordAsync(documentId, input.FileName, 0, fileKey);
-            await _dynamoDBService.UpdateFileStatusAsync(new UpdateStatusRequest
-            {
-                DocumentId = documentId,
-                Status = DocumentStatus.Uploading,
-                FileName = input.FileName,
-                S3Key = fileKey
-            });
+
+            _logger.LogInformation(
+                "PresightLambda finished initial document record creation. DocumentId: {DocumentId}",
+                documentId);
 
             return new FileKeyResponse(fileKey, presignedUrl, "OK");
         }

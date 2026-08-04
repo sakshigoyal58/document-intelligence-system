@@ -41,28 +41,51 @@ public class Function
 
             foreach (var record in dynamoEvent.Records)
             {
-                // ONLY INSERT events
-                if (record.EventName != "INSERT")
-                    continue;
+                var eventName = record.EventName ?? string.Empty;
+                var isUpdateEvent = string.Equals(eventName, "MODIFY", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(eventName, "UPDATE", StringComparison.OrdinalIgnoreCase);
 
-                var newImage = record.Dynamodb.NewImage;
-
-                var status = newImage.TryGetValue("status", out var statusAttr) ? statusAttr.S : string.Empty;
-                if (!string.Equals(status, DocumentStatus.Validated, StringComparison.OrdinalIgnoreCase))
+                if (!isUpdateEvent)
                 {
-                    _logger.LogInformation("Skipping OpenSearch indexing for {DocumentId} because status is {Status}", newImage["documentId"].S, status);
+                    _logger.LogInformation("Skipping OpenSearch indexing for event {EventName}", eventName);
+                    continue;
+                }
+
+                var newImage = record.Dynamodb?.NewImage;
+                if (newImage == null)
+                {
+                    _logger.LogWarning("Skipping OpenSearch indexing because the DynamoDB stream image is missing for event {EventName}", eventName);
+                    continue;
+                }
+
+                var documentId = newImage.TryGetValue("documentId", out var documentIdAttr) ? documentIdAttr.S : string.Empty;
+                var status = newImage.TryGetValue("status", out var statusAttr) ? statusAttr.S : string.Empty;
+                var isRelevantStatus = string.Equals(status, DocumentStatus.Validated, StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(status, DocumentStatus.Invalidated, StringComparison.OrdinalIgnoreCase);
+
+                if (!isRelevantStatus)
+                {
+                    _logger.LogInformation(
+                        "Skipping OpenSearch indexing for {DocumentId} because status is {Status} and event is {EventName}",
+                        documentId,
+                        status,
+                        eventName);
                     continue;
                 }
 
                 var payload = new OpenSearchDocumentPayload
                 {
-                    DocumentId = newImage["documentId"].S,
-                    FileName = newImage["fileName"].S
+                    DocumentId = documentId,
+                    FileName = newImage.TryGetValue("fileName", out var fileNameAttr) && !string.IsNullOrWhiteSpace(fileNameAttr.S)
+                        ? fileNameAttr.S
+                        : "untitled.pdf"
                 };
 
                 _logger.LogInformation(
-                    "OpenSearchLambda processing documentId: {DocumentId}",
-                    payload.DocumentId);
+                    "OpenSearchLambda processing documentId: {DocumentId} for event {EventName} with status {Status}",
+                    payload.DocumentId,
+                    eventName,
+                    status);
 
                 await _openSearchService.IndexDocumentAsync(payload);
             }

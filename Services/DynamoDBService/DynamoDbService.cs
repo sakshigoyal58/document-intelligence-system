@@ -25,6 +25,13 @@ public class DynamoDbService : IDynamoDbService
         ArgumentException.ThrowIfNullOrWhiteSpace(fileName);
         ArgumentException.ThrowIfNullOrWhiteSpace(s3Key);
 
+        _logger.LogInformation(
+            "Creating initial DynamoDB document record. DocumentId: {DocumentId}, FileName: {FileName}, S3Key: {S3Key}, Status: {Status}",
+            fileId,
+            fileName,
+            s3Key,
+            DocumentStatus.Uploading);
+
         await UpsertFileRecordAsync(new UpdateStatusRequest
         {
             DocumentId = fileId,
@@ -33,6 +40,8 @@ public class DynamoDbService : IDynamoDbService
             S3Key = s3Key,
             Status = DocumentStatus.Uploading
         });
+
+        _logger.LogInformation("Initial DynamoDB document record created successfully. DocumentId: {DocumentId}", fileId);
     }
 
     public async Task UpsertFileRecordAsync(UpdateStatusRequest updateStatusRequest)
@@ -45,6 +54,7 @@ public class DynamoDbService : IDynamoDbService
         {
             ["documentId"] = new AttributeValue { S = updateStatusRequest.DocumentId },
             ["status"] = new AttributeValue { S = updateStatusRequest.Status },
+            ["createdAt"] = new AttributeValue { S = now },
             ["updatedAt"] = new AttributeValue { S = now }
         };
 
@@ -79,7 +89,14 @@ public class DynamoDbService : IDynamoDbService
             Item = item
         };
 
+        _logger.LogInformation(
+            "Writing initial document payload to DynamoDB. DocumentId: {DocumentId}, Status: {Status}",
+            updateStatusRequest.DocumentId,
+            updateStatusRequest.Status);
+
         await _dynamoClient.PutItemAsync(request);
+
+        _logger.LogInformation("DynamoDB put completed. DocumentId: {DocumentId}", updateStatusRequest.DocumentId);
     }
 
     public async Task UpdateFileStatusAsync(UpdateStatusRequest updateStatusRequest)
