@@ -1,0 +1,204 @@
+<svg viewBox="0 0 1820 1200" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="msync" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1e293b"/>
+    </marker>
+    <marker id="masync" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M1,1 L9,5 L1,9" fill="none" stroke="#1e293b" stroke-width="1.6"/>
+    </marker>
+    <filter id="sh" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <rect width="1820" height="1200" fill="#f6f7fb"/>
+
+  <text x="40" y="40" font-size="22" font-weight="800" fill="#0f172a">Sequence Diagram — Document Upload &amp; Ingestion</text>
+  <text x="40" y="62" font-size="13" fill="#64748b">Solid arrow = synchronous call/return &#183; Dashed arrow = asynchronous event (S3 event, DynamoDB Stream, SNS, SQS)</text>
+
+  <!-- ================= PARTICIPANTS ================= -->
+  <!-- x centers, spacing ~132 -->
+  <g font-size="11.5" font-weight="700" fill="#0f172a" text-anchor="middle">
+    <!-- 1 Frontend -->
+    <rect x="30" y="90" width="120" height="42" rx="8" fill="#f1f5f9" stroke="#94a3b8" filter="url(#sh)"/>
+    <text x="90" y="115">Frontend</text>
+    <!-- 2 PresignLambda -->
+    <rect x="170" y="90" width="130" height="42" rx="8" fill="#fff4e8" stroke="#ED7100" filter="url(#sh)"/>
+    <text x="235" y="110">PresignLambda</text>
+    <!-- 3 S3 -->
+    <rect x="320" y="90" width="100" height="42" rx="8" fill="#f2f8e8" stroke="#7AA116" filter="url(#sh)"/>
+    <text x="370" y="115">S3</text>
+    <!-- 4 ProcessingLambda -->
+    <rect x="440" y="90" width="150" height="42" rx="8" fill="#fff4e8" stroke="#ED7100" filter="url(#sh)"/>
+    <text x="515" y="110">Processing-</text>
+    <text x="515" y="123">Lambda</text>
+    <!-- 5 DynamoDB -->
+    <rect x="610" y="90" width="120" height="42" rx="8" fill="#eef0fc" stroke="#3B48CC" filter="url(#sh)"/>
+    <text x="670" y="115">DynamoDB</text>
+    <!-- 6 OpenSearchLambda -->
+    <rect x="750" y="90" width="150" height="42" rx="8" fill="#fff4e8" stroke="#ED7100" filter="url(#sh)"/>
+    <text x="825" y="110">OpenSearch-</text>
+    <text x="825" y="123">Lambda</text>
+    <!-- 7 TextProcessingLambda -->
+    <rect x="920" y="90" width="160" height="42" rx="8" fill="#fff4e8" stroke="#ED7100" filter="url(#sh)"/>
+    <text x="1000" y="110">TextProcessing-</text>
+    <text x="1000" y="123">Lambda</text>
+    <!-- 8 Textract -->
+    <rect x="1100" y="90" width="120" height="42" rx="8" fill="#e8f7f3" stroke="#01A88D" filter="url(#sh)"/>
+    <text x="1160" y="110">Amazon</text>
+    <text x="1160" y="123">Textract</text>
+    <!-- 9 SNS -->
+    <rect x="1240" y="90" width="100" height="42" rx="8" fill="#fdeaf2" stroke="#E7157B" filter="url(#sh)"/>
+    <text x="1290" y="115">SNS</text>
+    <!-- 10 TextractResultLambda -->
+    <rect x="1360" y="90" width="160" height="42" rx="8" fill="#fff4e8" stroke="#ED7100" filter="url(#sh)"/>
+    <text x="1440" y="110">TextractResult-</text>
+    <text x="1440" y="123">Lambda</text>
+    <!-- 11 SQS -->
+    <rect x="1540" y="90" width="100" height="42" rx="8" fill="#fdeaf2" stroke="#E7157B" filter="url(#sh)"/>
+    <text x="1590" y="115">SQS</text>
+    <!-- 12 OpenSearchWriterLambda placed below to avoid overflow: instead reuse column, put under Textract column area lower -->
+  </g>
+
+  <!-- second header row for the last two participants to keep width sane: OpenSearchWriterLambda & OpenSearch reuse x of SQS/PresignLambda columns lower down via separate lifelines starting mid-diagram -->
+  <g font-size="11.5" font-weight="700" fill="#0f172a" text-anchor="middle">
+    <rect x="1670" y="90" width="120" height="42" rx="8" fill="#fff4e8" stroke="#ED7100" filter="url(#sh)"/>
+    <text x="1730" y="110">OpenSearch-</text>
+    <text x="1730" y="123">WriterLambda</text>
+  </g>
+
+  <!-- lifelines -->
+  <g stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="4,3">
+    <line x1="90" y1="132" x2="90" y2="1010"/>
+    <line x1="235" y1="132" x2="235" y2="1010"/>
+    <line x1="370" y1="132" x2="370" y2="1010"/>
+    <line x1="515" y1="132" x2="515" y2="1010"/>
+    <line x1="670" y1="132" x2="670" y2="1010"/>
+    <line x1="825" y1="132" x2="825" y2="1010"/>
+    <line x1="1000" y1="132" x2="1000" y2="1010"/>
+    <line x1="1160" y1="132" x2="1160" y2="1010"/>
+    <line x1="1290" y1="132" x2="1290" y2="1010"/>
+    <line x1="1440" y1="132" x2="1440" y2="1010"/>
+    <line x1="1590" y1="132" x2="1590" y2="1010"/>
+    <line x1="1730" y1="132" x2="1730" y2="1010"/>
+  </g>
+
+  <!-- OpenSearch (final store) as a bottom participant label near end, reuse near OpenSearchLambda column at bottom -->
+
+  <!-- ================= MESSAGES ================= -->
+  <g font-size="11.5" fill="#1e293b">
+    <!-- step helper: number circle + arrow + label -->
+
+    <!-- 1: Frontend -> PresignLambda -->
+    <circle cx="60" cy="165" r="10" fill="#0f172a"/><text x="60" y="169" fill="#fff" text-anchor="middle" font-size="10" font-weight="700">1</text>
+    <line x1="90" y1="165" x2="235" y2="165" stroke="#1e293b" stroke-width="1.6" marker-end="url(#msync)"/>
+    <text x="100" y="159">POST /presign {fileName}</text>
+
+    <!-- 2: PresignLambda --> Frontend (return url) -->
+    <circle cx="205" cy="200" r="10" fill="#0f172a"/><text x="205" y="204" fill="#fff" text-anchor="middle" font-size="10" font-weight="700">2</text>
+    <line x1="235" y1="200" x2="90" y2="200" stroke="#1e293b" stroke-width="1.6" stroke-dasharray="6,4" marker-end="url(#msync)"/>
+    <text x="100" y="194">{fileKey, presignedUrl}</text>
+
+    <!-- 3: Frontend -> S3 PUT -->
+    <circle cx="130" cy="235" r="10" fill="#0f172a"/><text x="130" y="239" fill="#fff" text-anchor="middle" font-size="10" font-weight="700">3</text>
+    <line x1="90" y1="235" x2="370" y2="235" stroke="#1e293b" stroke-width="1.6" marker-end="url(#msync)"/>
+    <text x="145" y="229">PUT file to S3 (presigned URL)</text>
+
+    <!-- 4: S3 -->  ProcessingLambda (async event) -->
+    <circle cx="440" cy="275" r="10" fill="#0f172a"/><text x="440" y="279" fill="#fff" text-anchor="middle" font-size="10" font-weight="700">4</text>
+    <line x1="370" y1="275" x2="515" y2="275" stroke="#7AA116" stroke-width="1.8" stroke-dasharray="2,3" marker-end="url(#masync)"/>
+    <text x="380" y="269" fill="#4d7c0f">async: ObjectCreated event</text>
+
+    <!-- note: validate PDF -->
+    <rect x="480" y="290" width="150" height="30" rx="5" fill="#fffbea" stroke="#facc15"/>
+    <text x="555" y="309" text-anchor="middle" font-size="10.5">validate PDF (size/type)</text>
+
+    <!-- 5: ProcessingLambda -> DynamoDB -->
+    <circle cx="590" cy="345" r="10" fill="#0f172a"/><text x="590" y="349" fill="#fff" text-anchor="middle" font-size="10" font-weight="700">5</text>
+    <line x1="515" y1="345" x2="670" y2="345" stroke="#1e293b" stroke-width="1.6" marker-end="url(#msync)"/>
+    <text x="525" y="339">PutItem: status = VALIDATED / VALIDATION_FAILED</text>
+
+    <!-- 6: DynamoDB --> OpenSearchLambda (stream, async) -->
+    <circle cx="745" cy="385" r="10" fill="#0f172a"/><text x="745" y="389" fill="#fff" text-anchor="middle" font-size="10" font-weight="700">6</text>
+    <line x1="670" y1="385" x2="825" y2="385" stroke="#3B48CC" stroke-width="1.8" stroke-dasharray="2,3" marker-end="url(#masync)"/>
+    <text x="530" y="379" fill="#3730a3">async: DynamoDB Stream (INSERT) — fan-out 1 of 2</text>
+
+    <!-- 7: OpenSearchLambda -> OpenSearch (mini note, since OpenSearch not a full column, note near lifeline) -->
+    <rect x="790" y="400" width="170" height="30" rx="5" fill="#f5f0ff" stroke="#8C4FFF"/>
+    <text x="875" y="419" text-anchor="middle" font-size="10.5" fill="#581c87">IndexDocumentAsync → OpenSearch</text>
+
+    <!-- 8: DynamoDB --> TextProcessingLambda (stream, async) -->
+    <circle cx="835" cy="455" r="10" fill="#0f172a"/><text x="835" y="459" fill="#fff" text-anchor="middle" font-size="10" font-weight="700">7</text>
+    <line x1="670" y1="455" x2="1000" y2="455" stroke="#3B48CC" stroke-width="1.8" stroke-dasharray="2,3" marker-end="url(#masync)"/>
+    <text x="700" y="449" fill="#3730a3">async: DynamoDB Stream (INSERT) — fan-out 2 of 2</text>
+
+    <!-- 9: TextProcessingLambda -> Textract -->
+    <circle cx="1080" cy="495" r="10" fill="#0f172a"/><text x="1080" y="499" fill="#fff" text-anchor="middle" font-size="10" font-weight="700">8</text>
+    <line x1="1000" y1="495" x2="1160" y2="495" stroke="#1e293b" stroke-width="1.6" marker-end="url(#msync)"/>
+    <text x="1005" y="489">StartDocumentTextDetection(s3Key)</text>
+
+    <!-- 10: Textract --> TextProcessingLambda (jobId) -->
+    <circle cx="1080" cy="525" r="10" fill="#0f172a"/><text x="1080" y="529" fill="#fff" text-anchor="middle" font-size="10" font-weight="700">9</text>
+    <line x1="1160" y1="525" x2="1000" y2="525" stroke="#1e293b" stroke-width="1.6" stroke-dasharray="6,4" marker-end="url(#msync)"/>
+    <text x="1005" y="519">jobId</text>
+
+    <!-- note: save job mapping -->
+    <rect x="920" y="540" width="200" height="30" rx="5" fill="#fff4e8" stroke="#ED7100"/>
+    <text x="1020" y="559" text-anchor="middle" font-size="10.5">SaveJobAsync(jobId → documentId)</text>
+
+    <!-- 11: Textract --> SNS (async, minutes later) -->
+    <circle cx="1225" cy="600" r="10" fill="#0f172a"/><text x="1225" y="604" fill="#fff" text-anchor="middle" font-size="10" font-weight="700">10</text>
+    <line x1="1160" y1="600" x2="1290" y2="600" stroke="#01A88D" stroke-width="1.8" stroke-dasharray="2,3" marker-end="url(#masync)"/>
+    <text x="1050" y="588" fill="#0f766e" font-style="italic">... job runs asynchronously (can take minutes) ...</text>
+    <text x="1050" y="613" fill="#047857">async: job completion notification</text>
+
+    <!-- 12: SNS --> TextractResultLambda -->
+    <circle cx="1365" cy="640" r="10" fill="#0f172a"/><text x="1365" y="644" fill="#fff" text-anchor="middle" font-size="10" font-weight="700">11</text>
+    <line x1="1290" y1="640" x2="1440" y2="640" stroke="#E7157B" stroke-width="1.8" stroke-dasharray="2,3" marker-end="url(#masync)"/>
+    <text x="1295" y="634" fill="#9d174d">async: SNS delivers {jobId, status}</text>
+
+    <!-- note idempotency -->
+    <rect x="1355" y="655" width="220" height="42" rx="5" fill="#fffbea" stroke="#facc15"/>
+    <text x="1465" y="671" text-anchor="middle" font-size="10">check status ≠ COMPLETED</text>
+    <text x="1465" y="685" text-anchor="middle" font-size="10">(idempotency guard)</text>
+
+    <!-- 13: TextractResultLambda -> Textract (get results) -->
+    <circle cx="1300" cy="730" r="10" fill="#0f172a"/><text x="1300" y="734" fill="#fff" text-anchor="middle" font-size="10" font-weight="700">12</text>
+    <line x1="1440" y1="730" x2="1160" y2="730" stroke="#1e293b" stroke-width="1.6" marker-end="url(#msync)"/>
+    <text x="1180" y="724">GetExtractedTextAsync(jobId)</text>
+
+    <!-- note chunk+embed -->
+    <rect x="1355" y="745" width="220" height="42" rx="5" fill="#fff4e8" stroke="#ED7100"/>
+    <text x="1465" y="761" text-anchor="middle" font-size="10">chunk text → generate</text>
+    <text x="1465" y="775" text-anchor="middle" font-size="10">embedding per chunk (Gemini)</text>
+
+    <!-- 14: TextractResultLambda -> SQS -->
+    <circle cx="1515" cy="805" r="10" fill="#0f172a"/><text x="1515" y="809" fill="#fff" text-anchor="middle" font-size="10" font-weight="700">13</text>
+    <line x1="1440" y1="805" x2="1590" y2="805" stroke="#1e293b" stroke-width="1.6" marker-end="url(#msync)"/>
+    <text x="1330" y="799">SendChunksForIndexingAsync {jobId, documentId, chunks[]}</text>
+
+    <!-- 15: SQS --> OpenSearchWriterLambda (async) -->
+    <circle cx="1660" cy="850" r="10" fill="#0f172a"/><text x="1660" y="854" fill="#fff" text-anchor="middle" font-size="10" font-weight="700">14</text>
+    <line x1="1590" y1="850" x2="1730" y2="850" stroke="#E7157B" stroke-width="1.8" stroke-dasharray="2,3" marker-end="url(#masync)"/>
+    <text x="1592" y="844" fill="#9d174d">async: queue delivery</text>
+
+    <!-- note: index + mark complete -->
+    <rect x="1580" y="865" width="230" height="56" rx="5" fill="#f5f0ff" stroke="#8C4FFF"/>
+    <text x="1695" y="881" text-anchor="middle" font-size="10" fill="#581c87">bulk-index chunks + vectors</text>
+    <text x="1695" y="895" text-anchor="middle" font-size="10" fill="#581c87">into OpenSearch</text>
+    <text x="1695" y="911" text-anchor="middle" font-size="10" fill="#9a3412">UpdateStatus → DynamoDB: COMPLETED</text>
+
+    <!-- 15: status update note (kept as a note, not a crossing arrow, to avoid cutting across every lifeline) -->
+    <rect x="1580" y="925" width="230" height="28" rx="5" fill="#eef0fc" stroke="#3B48CC"/>
+    <text x="1695" y="944" text-anchor="middle" font-size="10" fill="#1e3a8a">15: UpdateFileStatusAsync → DynamoDB</text>
+  </g>
+
+  <!-- ================= FOOTER ================= -->
+  <rect x="40" y="1000" width="1740" height="180" rx="10" fill="#0f172a"/>
+  <text x="62" y="1030" font-size="14" font-weight="700" fill="#f8fafc">Design points this sequence demonstrates</text>
+  <text x="62" y="1058" font-size="11.5" fill="#cbd5e1">• The pipeline never blocks a Lambda waiting on Textract — a job that can take minutes is handled via SNS callback, not polling.</text>
+  <text x="62" y="1082" font-size="11.5" fill="#cbd5e1">• DynamoDB Streams fan out to two consumers independently (steps 6 &amp; 7) — metadata indexing and OCR kickoff can fail/retry without blocking each other.</text>
+  <text x="62" y="1106" font-size="11.5" fill="#cbd5e1">• An idempotency check (status ≠ COMPLETED) guards against duplicate SNS delivery re-processing the same job.</text>
+  <text x="62" y="1130" font-size="11.5" fill="#cbd5e1">• Status is only marked COMPLETED after the write to OpenSearch actually succeeds (step 15) — not optimistically after Textract finishes.</text>
+
+  <text x="1780" y="1180" font-size="10" fill="#94a3b8" text-anchor="end">document-intelligence-system</text>
+</svg>
